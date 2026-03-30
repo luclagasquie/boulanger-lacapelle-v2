@@ -1,0 +1,223 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { bakery } from "../lib/config";
+import { formatCurrency, listActiveProducts, priceFromWeight } from "../lib/db";
+import { getReservationContext } from "../lib/schedule";
+
+const products = await listActiveProducts();
+const reservation = getReservationContext();
+const searchParams = Astro.url.searchParams;
+
+const messageMap = {
+  success: "Votre reservation a bien ete enregistree. Le paiement se fera sur place en especes.",
+  closed: "Les reservations ne sont pas ouvertes aujourd'hui. Revenez le dimanche pour le lundi ou le mercredi pour le jeudi.",
+  empty: "Choisissez au moins un pain avant de valider la reservation.",
+  invalid: "Certains champs sont invalides. Verifiez vos coordonnees et les quantites.",
+  unavailable: "Un des produits choisis n'est plus disponible. Rechargez la page avant de recommencer."
+} as const;
+
+const flashCode = searchParams.get("status") as keyof typeof messageMap | null;
+const flashType = flashCode === "success" ? "success" : flashCode ? "error" : null;
+const flashMessage = flashCode ? messageMap[flashCode] : null;
+---
+
+<BaseLayout
+  title="Boulangerie Zacharie Zion | Reservation de pains artisanaux"
+  description="Reservez vos pains artisanaux a Lacapelle-Cabanac pour le lundi soir ou le jeudi soir."
+>
+  <main class="page">
+    <section class="hero">
+      <div class="hero__copy">
+        <p class="eyebrow">Boulangerie paysanne du Lot</p>
+        <h1>Reservez vos pains artisanaux chez {bakery.bakerName}</h1>
+        <p class="hero__lead">
+          Retrait a {bakery.village}, le lundi soir et le jeudi soir de {bakery.openingWindow}. {bakery.cashOnlyLabel}.
+        </p>
+        <div class="hero__meta">
+          <span>Commandes: dimanche pour le lundi</span>
+          <span>Commandes: mercredi pour le jeudi</span>
+          <span>Retrait: {bakery.openingWindow}</span>
+        </div>
+      </div>
+    </section>
+
+    {flashMessage && flashType && <p class={`flash flash--${flashType}`}>{flashMessage}</p>}
+
+    <section class="section-card">
+      <p class={`notice notice--${reservation.isOpen ? "success" : "warning"}`}>
+        {reservation.statusMessage}
+      </p>
+      {reservation.activeWindow && (
+        <div class="pickup-panel">
+          <p class="pickup-panel__label">Retrait en cours de reservation</p>
+          <strong>{reservation.activeWindow.pickupDateLabel}</strong>
+          <p>Commande possible uniquement aujourd'hui.</p>
+        </div>
+      )}
+    </section>
+
+    <section class="content-grid">
+      <form class="order-form" method="POST" action="/api/order">
+        <div class="section-heading">
+          <div>
+            <p class="section-heading__eyebrow">Reservation en ligne</p>
+            <h2>Choisissez vos pains</h2>
+          </div>
+          <div class="total-box">
+            <span>Total estime</span>
+            <strong data-total-display>{formatCurrency(0)}</strong>
+          </div>
+        </div>
+
+        <div class="product-grid">
+          {products.map((product) => {
+            const unitPrice = priceFromWeight(product.weight_grams, product.price_per_kg_cents);
+            return (
+              <article class="product-card">
+                <img src={product.image_url} alt={product.title} loading="lazy" />
+                <div class="product-card__body product-card__body--row">
+                  <div class="product-card__copy">
+                    <h3>{product.title}</h3>
+                    <p class="product-card__details">
+                      {product.weight_grams} g - {formatCurrency(product.price_per_kg_cents)} / kg
+                    </p>
+                    <p class="product-card__price">Prix indicatif piece: {formatCurrency(unitPrice)}</p>
+                  </div>
+                  <div class="product-card__controls">
+                    <label class="stepper-field">
+                      <span>Quantite</span>
+                      <div class="qty-stepper">
+                        <button type="button" class="stepper-button" data-step="-1" disabled={!reservation.isOpen}>
+                          -
+                        </button>
+                        <input
+                          type="number"
+                          min="0"
+                          max="20"
+                          step="1"
+                          name={`qty_${product.id}`}
+                          value="0"
+                          data-price={unitPrice}
+                          data-product-title={product.title}
+                          disabled={!reservation.isOpen}
+                        />
+                        <button type="button" class="stepper-button" data-step="1" disabled={!reservation.isOpen}>
+                          +
+                        </button>
+                      </div>
+                    </label>
+                    <p class="line-total">
+                      Ligne: <strong data-line-total>{formatCurrency(0)}</strong>
+                    </p>
+                  </div>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+
+        <div class="customer-panel">
+          <div class="section-heading">
+            <div>
+              <p class="section-heading__eyebrow">Coordonnees</p>
+              <h2>Valider la reservation</h2>
+            </div>
+          </div>
+
+          <div class="field-grid">
+            <label>
+              <span>Prenom</span>
+              <input type="text" name="firstName" required minlength="2" maxlength="50" />
+            </label>
+            <label>
+              <span>Nom</span>
+              <input type="text" name="lastName" required minlength="2" maxlength="50" />
+            </label>
+            <label class="field-grid__wide">
+              <span>Numero de telephone</span>
+              <input type="tel" name="phone" required minlength="8" maxlength="25" inputmode="tel" />
+            </label>
+          </div>
+
+          <div class="customer-panel__footer">
+            <div>
+              <p>Aucun paiement en ligne.</p>
+              <p>Le reglement s'effectue sur place en especes entre 17 h et 18 h 30.</p>
+            </div>
+            <button type="submit" class="cta" disabled={!reservation.isOpen}>
+              Reserver ma commande
+            </button>
+          </div>
+        </div>
+      </form>
+    </section>
+
+    <section class="info-panel">
+      <div class="info-card">
+        <p class="section-heading__eyebrow">La boulangerie</p>
+        <h2>{bakery.bakerName}</h2>
+        <p>
+          Petite boulangerie artisanale situee a {bakery.village} dans le {bakery.region}. Les retraits se font le lundi soir et
+          le jeudi soir uniquement.
+        </p>
+      </div>
+      <div class="info-card">
+        <p class="section-heading__eyebrow">Rappel pratique</p>
+        <ul class="plain-list">
+          <li>Commande la veille seulement</li>
+          <li>Dimanche pour le lundi</li>
+          <li>Mercredi pour le jeudi</li>
+          <li>Retrait entre 17 h et 18 h 30</li>
+          <li>Paiement en especes sur place</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <script is:inline>
+    const formatEuro = (cents) =>
+      new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" }).format(cents / 100);
+
+    const qtyInputs = Array.from(document.querySelectorAll('input[name^="qty_"]'));
+    const totalDisplay = document.querySelector("[data-total-display]");
+
+    const updateTotals = () => {
+      let total = 0;
+
+      qtyInputs.forEach((input) => {
+        const quantity = Number(input.value || 0);
+        const price = Number(input.dataset.price || 0);
+        const lineTotal = price * quantity;
+        total += lineTotal;
+
+        const card = input.closest(".product-card");
+        const lineDisplay = card?.querySelector("[data-line-total]");
+        if (lineDisplay) {
+          lineDisplay.textContent = formatEuro(lineTotal);
+        }
+      });
+
+      if (totalDisplay) {
+        totalDisplay.textContent = formatEuro(total);
+      }
+    };
+
+    document.querySelectorAll(".qty-stepper").forEach((stepper) => {
+      const input = stepper.querySelector('input[type="number"]');
+      const buttons = stepper.querySelectorAll(".stepper-button");
+
+      buttons.forEach((button) => {
+        button.addEventListener("click", () => {
+          const current = Number(input.value || 0);
+          const step = Number(button.dataset.step || 0);
+          const next = Math.max(0, Math.min(20, current + step));
+          input.value = String(next);
+          input.dispatchEvent(new Event("input", { bubbles: true }));
+        });
+      });
+    });
+
+    qtyInputs.forEach((input) => input.addEventListener("input", updateTotals));
+    updateTotals();
+  </script>
+</BaseLayout>

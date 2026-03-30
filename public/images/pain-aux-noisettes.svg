@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-labelledby="title desc">
+  <title id="title">Pain aux noisettes</title>
+  <desc id="desc">Illustration d'un pain aux noisettes.</desc>
+  <rect width="1200" height="900" fill="#f7ebd5" rx="80" />
+  <ellipse cx="600" cy="565" rx="330" ry="188" fill="#6d3e18" />
+  <ellipse cx="600" cy="540" rx="304" ry="166" fill="#a5652d" />
+  <circle cx="470" cy="510" r="28" fill="#cba16a" />
+  <circle cx="540" cy="470" r="24" fill="#d5ae74" />
+  <circle cx="620" cy="535" r="26" fill="#bf8d58" />
+  <circle cx="715" cy="485" r="24" fill="#d8b176" />
+  <circle cx="665" cy="445" r="20" fill="#b67b43" />
+  <text x="600" y="180" text-anchor="middle" font-size="68" font-family="Georgia, serif" fill="#5f2d0a">Pain aux noisettes</text>
+</svg>

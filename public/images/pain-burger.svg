@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-labelledby="title desc">
+  <title id="title">Pain burger</title>
+  <desc id="desc">Illustration d'un pain burger.</desc>
+  <rect width="1200" height="900" fill="#f8ecd9" rx="80" />
+  <ellipse cx="600" cy="610" rx="240" ry="82" fill="#7a4518" />
+  <path d="M360 560c0-125 110-210 240-210s240 85 240 210z" fill="#d09043" />
+  <path d="M380 560c20-104 112-172 220-172s200 68 220 172z" fill="#e8ba72" />
+  <circle cx="485" cy="445" r="10" fill="#fff5d4" />
+  <circle cx="555" cy="425" r="9" fill="#fff5d4" />
+  <circle cx="625" cy="430" r="9" fill="#fff5d4" />
+  <circle cx="700" cy="455" r="10" fill="#fff5d4" />
+  <text x="600" y="180" text-anchor="middle" font-size="74" font-family="Georgia, serif" fill="#5f2d0a">Pain burger</text>
+</svg>

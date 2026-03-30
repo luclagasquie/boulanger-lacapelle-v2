@@ -1,0 +1,288 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { bakery, adminCookieName } from "../lib/config";
+import { clearAdminCookie, isAdminAuthenticated, isAdminConfigured } from "../lib/admin";
+import { formatCurrency, listAllProducts, listOrderDates, listOrdersForPickupDate, priceFromWeight } from "../lib/db";
+
+const secure = Astro.url.protocol === "https:";
+const searchParams = Astro.url.searchParams;
+const adminCookie = Astro.cookies.get(adminCookieName)?.value;
+const isAuthenticated = isAdminAuthenticated(adminCookie);
+const configured = isAdminConfigured();
+
+if (searchParams.get("logout") === "1") {
+  clearAdminCookie(Astro.cookies, secure);
+}
+
+const status = searchParams.get("status");
+const selectedPickupDate = searchParams.get("pickup");
+
+const products = isAuthenticated ? await listAllProducts() : [];
+const orderDates = isAuthenticated ? await listOrderDates() : [];
+const currentPickup = selectedPickupDate || orderDates[0]?.pickup_date || "";
+const orders = isAuthenticated && currentPickup ? await listOrdersForPickupDate(currentPickup) : [];
+const totals = orders.reduce(
+  (acc, order) => {
+    acc.orders += 1;
+    acc.items += order.items.reduce((sum, item) => sum + item.quantity, 0);
+    acc.turnover += order.total_cents;
+    return acc;
+  },
+  { orders: 0, items: 0, turnover: 0 }
+);
+
+const messageMap: Record<string, { type: "success" | "error"; message: string }> = {
+  auth: {
+    type: "error",
+    message: "Mot de passe incorrect."
+  },
+  product_saved: {
+    type: "success",
+    message: "Produit enregistre."
+  },
+  product_deleted: {
+    type: "success",
+    message: "Produit supprime."
+  },
+  orders_reset: {
+    type: "success",
+    message: "Le tableau de commande a ete reinitialise pour cette date."
+  },
+  invalid: {
+    type: "error",
+    message: "Les donnees envoyees sont invalides."
+  }
+};
+
+const flash = status ? messageMap[status] : null;
+---
+
+<BaseLayout title="Espace boulanger | Zacharie Zion" description="Gestion des commandes et des produits de la boulangerie.">
+  <main class="page page--admin">
+    <section class="hero hero--compact">
+      <div class="hero__copy">
+        <p class="eyebrow">Administration</p>
+        <h1>Espace boulanger de {bakery.bakerName}</h1>
+        <p class="hero__lead">
+          Consultation des reservations, mise a jour du catalogue et reinitialisation du tableau de commande.
+        </p>
+      </div>
+    </section>
+
+    {!configured && (
+      <p class="flash flash--error">
+        Configurez d'abord `ADMIN_PASSWORD` et `ADMIN_SESSION_TOKEN` dans les secrets Cloudflare ou dans `.dev.vars`.
+      </p>
+    )}
+
+    {flash && <p class={`flash flash--${flash.type}`}>{flash.message}</p>}
+
+    {!isAuthenticated ? (
+      <section class="admin-login">
+        <form method="POST" action="/api/admin/login" class="auth-card">
+          <p class="section-heading__eyebrow">Connexion protegee</p>
+          <h2>Acces Zacharie</h2>
+          <label>
+            <span>Mot de passe</span>
+            <input type="password" name="password" required />
+          </label>
+          <button class="cta" type="submit" disabled={!configured}>
+            Ouvrir le tableau de bord
+          </button>
+        </form>
+      </section>
+    ) : (
+      <>
+        <section class="admin-toolbar">
+          <div class="stats-grid">
+            <article class="stat-card">
+              <span>Commandes</span>
+              <strong>{totals.orders}</strong>
+            </article>
+            <article class="stat-card">
+              <span>Pains reserves</span>
+              <strong>{totals.items}</strong>
+            </article>
+            <article class="stat-card">
+              <span>Total journee</span>
+              <strong>{formatCurrency(totals.turnover)}</strong>
+            </article>
+          </div>
+          <form method="POST" action="/api/admin/logout">
+            <button class="secondary-button" type="submit">Se deconnecter</button>
+          </form>
+        </section>
+
+        <section class="admin-grid">
+          <div class="admin-column">
+            <section class="admin-card">
+              <div class="section-heading">
+                <div>
+                  <p class="section-heading__eyebrow">Commandes</p>
+                  <h2>Tableau de journee</h2>
+                </div>
+              </div>
+
+              <form class="pickup-filter" method="GET" action="/admin">
+                <label>
+                  <span>Date de retrait</span>
+                  <select name="pickup" onchange="this.form.submit()">
+                    {orderDates.length === 0 && <option value="">Aucune reservation</option>}
+                    {orderDates.map((date) => (
+                      <option value={date.pickup_date} selected={date.pickup_date === currentPickup}>
+                        {date.pickup_label} - {date.order_count} commande(s)
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              </form>
+
+              {currentPickup && orderDates.length > 0 ? (
+                <>
+                  <div class="orders-list">
+                    {orders.map((order) => (
+                      <article class="order-card">
+                        <div class="order-card__header">
+                          <div>
+                            <h3>
+                              {order.customer_first_name} {order.customer_last_name}
+                            </h3>
+                            <p>{order.phone}</p>
+                          </div>
+                          <strong>{formatCurrency(order.total_cents)}</strong>
+                        </div>
+                        <ul class="plain-list">
+                          {order.items.map((item) => (
+                            <li>
+                              {item.quantity} x {item.product_title} ({item.weight_grams} g) - {formatCurrency(item.line_total_cents)}
+                            </li>
+                          ))}
+                        </ul>
+                      </article>
+                    ))}
+                  </div>
+
+                  <form method="POST" action="/api/admin/orders/reset" onsubmit="return confirm('Supprimer toutes les commandes de cette date ?');">
+                    <input type="hidden" name="pickupDate" value={currentPickup} />
+                    <button class="danger-button" type="submit">Reinitialiser cette journee</button>
+                  </form>
+                </>
+              ) : (
+                <p class="empty-state">Aucune commande pour le moment.</p>
+              )}
+            </section>
+          </div>
+
+          <div class="admin-column">
+            <section class="admin-card">
+              <div class="section-heading">
+                <div>
+                  <p class="section-heading__eyebrow">Catalogue</p>
+                  <h2>Ajouter un produit</h2>
+                </div>
+              </div>
+
+              <form class="product-form product-form--create" method="POST" action="/api/admin/products/create">
+                <label>
+                  <span>Titre</span>
+                  <input type="text" name="title" required maxlength="80" />
+                </label>
+                <label>
+                  <span>Slug</span>
+                  <input type="text" name="slug" placeholder="laisser vide pour auto" maxlength="80" />
+                </label>
+                <label>
+                  <span>Poids (g)</span>
+                  <input type="number" name="weightGrams" min="50" max="5000" required />
+                </label>
+                <label>
+                  <span>Prix au kilo (EUR)</span>
+                  <input type="number" name="pricePerKg" min="0.1" max="100" step="0.01" required />
+                </label>
+                <label>
+                  <span>Image</span>
+                  <input type="text" name="imageUrl" value="/images/pain-au-levain.svg" required />
+                </label>
+                <label>
+                  <span>Ordre</span>
+                  <input type="number" name="sortOrder" min="0" max="999" value="10" required />
+                </label>
+                <label class="checkbox-row">
+                  <input type="checkbox" name="isActive" checked />
+                  <span>Produit visible</span>
+                </label>
+                <button class="cta" type="submit">Ajouter le produit</button>
+              </form>
+            </section>
+
+            <section class="admin-card">
+              <div class="section-heading">
+                <div>
+                  <p class="section-heading__eyebrow">Catalogue</p>
+                  <h2>Modifier les produits</h2>
+                </div>
+              </div>
+
+              <div class="product-admin-list">
+                {products.map((product) => (
+                  <article class="product-admin-card">
+                    <img src={product.image_url} alt={product.title} />
+                    <form class="product-form" method="POST" action="/api/admin/products/update">
+                      <input type="hidden" name="id" value={product.id} />
+                      <label>
+                        <span>Titre</span>
+                        <input type="text" name="title" value={product.title} required />
+                      </label>
+                      <label>
+                        <span>Slug</span>
+                        <input type="text" name="slug" value={product.slug} required />
+                      </label>
+                      <label>
+                        <span>Poids (g)</span>
+                        <input type="number" name="weightGrams" min="50" max="5000" value={product.weight_grams} required />
+                      </label>
+                      <label>
+                        <span>Prix au kilo (EUR)</span>
+                        <input
+                          type="number"
+                          name="pricePerKg"
+                          min="0.1"
+                          max="100"
+                          step="0.01"
+                          value={(product.price_per_kg_cents / 100).toFixed(2)}
+                          required
+                        />
+                      </label>
+                      <label>
+                        <span>Image</span>
+                        <input type="text" name="imageUrl" value={product.image_url} required />
+                      </label>
+                      <label>
+                        <span>Ordre</span>
+                        <input type="number" name="sortOrder" min="0" max="999" value={product.sort_order} required />
+                      </label>
+                      <label class="checkbox-row">
+                        <input type="checkbox" name="isActive" checked={product.is_active === 1} />
+                        <span>Produit visible</span>
+                      </label>
+                      <div class="product-form__meta">
+                        <span>Prix piece estime: {formatCurrency(priceFromWeight(product.weight_grams, product.price_per_kg_cents))}</span>
+                      </div>
+                      <div class="product-form__actions">
+                        <button class="secondary-button" type="submit">Enregistrer</button>
+                      </div>
+                    </form>
+                    <form method="POST" action="/api/admin/products/delete" onsubmit="return confirm('Supprimer ce produit ?');">
+                      <input type="hidden" name="id" value={product.id} />
+                      <button class="danger-button" type="submit">Supprimer</button>
+                    </form>
+                  </article>
+                ))}
+              </div>
+            </section>
+          </div>
+        </section>
+      </>
+    )}
+  </main>
+</BaseLayout>

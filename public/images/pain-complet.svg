@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-labelledby="title desc">
+  <title id="title">Pain complet</title>
+  <desc id="desc">Illustration d'un pain complet.</desc>
+  <rect width="1200" height="900" fill="#f7ead4" rx="80" />
+  <ellipse cx="600" cy="570" rx="320" ry="195" fill="#5c371d" />
+  <ellipse cx="600" cy="545" rx="302" ry="178" fill="#82522c" />
+  <circle cx="490" cy="510" r="16" fill="#ead4aa" />
+  <circle cx="555" cy="470" r="14" fill="#ead4aa" />
+  <circle cx="632" cy="530" r="15" fill="#ead4aa" />
+  <circle cx="705" cy="485" r="13" fill="#ead4aa" />
+  <text x="600" y="180" text-anchor="middle" font-size="74" font-family="Georgia, serif" fill="#5f2d0a">Pain complet</text>
+</svg>

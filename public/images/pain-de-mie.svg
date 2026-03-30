@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-labelledby="title desc">
+  <title id="title">Pain de mie</title>
+  <desc id="desc">Illustration d'un pain de mie.</desc>
+  <rect width="1200" height="900" fill="#f6ebd8" rx="80" />
+  <rect x="340" y="320" width="520" height="320" rx="110" fill="#99602b" />
+  <rect x="360" y="345" width="480" height="270" rx="90" fill="#c68442" />
+  <rect x="410" y="400" width="130" height="170" rx="24" fill="#f8e2b9" />
+  <rect x="548" y="400" width="120" height="170" rx="24" fill="#f8e2b9" />
+  <rect x="676" y="400" width="110" height="170" rx="24" fill="#f8e2b9" />
+  <text x="600" y="180" text-anchor="middle" font-size="74" font-family="Georgia, serif" fill="#5f2d0a">Pain de mie</text>
+</svg>
