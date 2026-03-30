@@ -12,7 +12,14 @@ export const POST: APIRoute = async ({ request, cookies, url }) => {
     }
 
     setAdminCookie(cookies, url.protocol === "https:");
-    return Response.redirect(new URL("/admin", url), 303);
+    // Cloudflare's Response.redirect() returns immutable headers, which prevents
+    // the adapter from appending Set-Cookie afterwards.
+    return new Response(null, {
+      status: 303,
+      headers: {
+        Location: new URL("/admin", url).toString()
+      }
+    });
   } catch (error) {
     console.error("Admin login failed", error);
     return Response.redirect(new URL("/admin?status=server_error", url), 303);

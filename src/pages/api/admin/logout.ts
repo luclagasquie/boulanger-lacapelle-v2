@@ -3,5 +3,10 @@ import { clearAdminCookie } from "../../../lib/admin";
 
 export const POST: APIRoute = async ({ cookies, url }) => {
   clearAdminCookie(cookies, url.protocol === "https:");
-  return Response.redirect(new URL("/admin", url), 303);
+  return new Response(null, {
+    status: 303,
+    headers: {
+      Location: new URL("/admin", url).toString()
+    }
+  });
 };
