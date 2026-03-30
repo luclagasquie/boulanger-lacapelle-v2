@@ -6,22 +6,22 @@
   "compatibility_flags": ["nodejs_compat"],
   "assets": {
     "directory": "./dist",
-    "binding": "ASSETS"
+    "binding": "ASSETS",
   },
   "observability": {
-    "enabled": true
+    "enabled": true,
   },
   "d1_databases": [
     {
       "binding": "DB",
       "database_name": "boulanger-lacapelle",
-      "database_id": "ec5ae4df-8ce1-420b-a4dc-ef54283b632c"
-    }
+      "database_id": "ec5ae4df-8ce1-420b-a4dc-ef54283b632c",
+    },
   ],
   "vars": {
     "SHOP_TZ": "Europe/Paris",
-    "BAKER_NAME": "Zacharie Zion",
+    "BAKER_NAME": "Zacharie",
     "BAKERY_VILLAGE": "Lacapelle-Cabanac",
-    "BAKERY_REGION": "Lot"
-  }
+    "BAKERY_REGION": "Lot",
+  },
 }
