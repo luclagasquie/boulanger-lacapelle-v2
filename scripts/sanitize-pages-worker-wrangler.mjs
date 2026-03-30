@@ -1,6 +1,7 @@
 import { readFile, writeFile } from "node:fs/promises";
 
 const workerWranglerPath = new URL("../dist/_worker.js/wrangler.json", import.meta.url);
+const workerIndexPath = new URL("../dist/_worker.js/index.js", import.meta.url);
 const rootWranglerPath = new URL("../wrangler.jsonc", import.meta.url);
 
 const rawWorkerConfig = await readFile(workerWranglerPath, "utf8");
@@ -10,7 +11,7 @@ const rootConfig = JSON.parse(rawRootConfig);
 
 const sanitizedWorkerConfig = {
   name: workerConfig.name,
-  main: workerConfig.main,
+  main: "index.js",
   compatibility_date: rootConfig.compatibility_date ?? workerConfig.compatibility_date,
   compatibility_flags: rootConfig.compatibility_flags ?? workerConfig.compatibility_flags,
   no_bundle: workerConfig.no_bundle,
@@ -19,4 +20,5 @@ const sanitizedWorkerConfig = {
   d1_databases: rootConfig.d1_databases ?? workerConfig.d1_databases
 };
 
+await writeFile(workerIndexPath, 'export { default } from "./entry.mjs";\n');
 await writeFile(workerWranglerPath, `${JSON.stringify(sanitizedWorkerConfig, null, 2)}\n`);
