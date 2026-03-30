@@ -9,7 +9,7 @@
   "scripts": {
     "dev": "wrangler types && astro dev",
     "start": "wrangler types && astro dev",
-    "build": "wrangler types && astro check && astro build",
+    "build": "wrangler types && astro check && astro build && node ./scripts/prepare-cloudflare-pages.mjs",
     "preview": "wrangler types && astro preview",
     "pages:preview": "npm run build && wrangler pages dev ./dist"
   },
