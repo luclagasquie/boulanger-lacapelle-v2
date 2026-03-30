@@ -2204,3 +2204,129 @@
 2198 http fetch GET https://registry.npmjs.org/trim-lines attempt 2 failed with ENOTFOUND
 2199 http fetch GET https://registry.npmjs.org/tinyexec attempt 2 failed with ENOTFOUND
 2200 http fetch GET https://registry.npmjs.org/tiny-inflate attempt 2 failed with ENOTFOUND
+2201 http fetch GET https://registry.npmjs.org/svgo attempt 3 failed with ENOTFOUND
+2202 http fetch GET https://registry.npmjs.org/tinyclip attempt 3 failed with ENOTFOUND
+2203 http fetch GET https://registry.npmjs.org/tinyglobby attempt 3 failed with ENOTFOUND
+2204 http fetch GET https://registry.npmjs.org/supports-color attempt 3 failed with ENOTFOUND
+2205 http fetch GET https://registry.npmjs.org/stringify-entities attempt 3 failed with ENOTFOUND
+2206 http fetch GET https://registry.npmjs.org/space-separated-tokens attempt 3 failed with ENOTFOUND
+2207 http fetch GET https://registry.npmjs.org/trim-lines attempt 3 failed with ENOTFOUND
+2208 http fetch GET https://registry.npmjs.org/tinyexec attempt 3 failed with ENOTFOUND
+2209 http fetch GET https://registry.npmjs.org/tiny-inflate attempt 3 failed with ENOTFOUND
+2210 http fetch GET 200 https://registry.npmjs.org/svgo 70081ms (cache stale)
+2211 silly packumentCache corgi:https://registry.npmjs.org/svgo set size:138618 disposed:false
+2212 silly inflate node_modules/trough
+2213 silly packumentCache corgi:https://registry.npmjs.org/trough cache-miss
+2214 http fetch GET 200 https://registry.npmjs.org/tinyclip 70081ms (cache stale)
+2215 silly packumentCache corgi:https://registry.npmjs.org/tinyclip set size:5958 disposed:false
+2216 silly inflate node_modules/tsconfck
+2217 silly packumentCache corgi:https://registry.npmjs.org/tsconfck cache-miss
+2218 http fetch GET 200 https://registry.npmjs.org/tinyglobby 70079ms (cache stale)
+2219 silly packumentCache corgi:https://registry.npmjs.org/tinyglobby set size:17847 disposed:false
+2220 silly inflate node_modules/tslib
+2221 silly packumentCache corgi:https://registry.npmjs.org/tslib cache-miss
+2222 http fetch GET 200 https://registry.npmjs.org/stringify-entities 70091ms (cache stale)
+2223 silly packumentCache corgi:https://registry.npmjs.org/stringify-entities set size:23040 disposed:false
+2224 silly inflate node_modules/typescript
+2225 silly packumentCache corgi:https://registry.npmjs.org/typescript cache-miss
+2226 http fetch GET 200 https://registry.npmjs.org/space-separated-tokens 70093ms (cache stale)
+2227 silly packumentCache corgi:https://registry.npmjs.org/space-separated-tokens set size:14271 disposed:false
+2228 silly inflate node_modules/ufo
+2229 silly packumentCache corgi:https://registry.npmjs.org/ufo cache-miss
+2230 http fetch GET 200 https://registry.npmjs.org/supports-color 70090ms (cache stale)
+2231 silly packumentCache corgi:https://registry.npmjs.org/supports-color set size:54084 disposed:false
+2232 silly inflate node_modules/ultrahtml
+2233 silly packumentCache corgi:https://registry.npmjs.org/ultrahtml cache-miss
+2234 http fetch GET 200 https://registry.npmjs.org/trim-lines 70065ms (cache stale)
+2235 silly packumentCache corgi:https://registry.npmjs.org/trim-lines set size:11577 disposed:false
+2236 silly inflate node_modules/uncrypto
+2237 silly packumentCache corgi:https://registry.npmjs.org/uncrypto cache-miss
+2238 http fetch GET 200 https://registry.npmjs.org/tiny-inflate 70087ms (cache stale)
+2239 silly packumentCache corgi:https://registry.npmjs.org/tiny-inflate set size:3124 disposed:false
+2240 silly inflate node_modules/undici
+2241 silly packumentCache corgi:https://registry.npmjs.org/undici cache-miss
+2242 http fetch GET 200 https://registry.npmjs.org/tinyexec 70086ms (cache stale)
+2243 silly packumentCache corgi:https://registry.npmjs.org/tinyexec set size:14807 disposed:false
+2244 silly inflate node_modules/unenv
+2245 silly packumentCache corgi:https://registry.npmjs.org/unenv cache-miss
+2246 http fetch GET https://registry.npmjs.org/tsconfck attempt 1 failed with ENOTFOUND
+2247 http fetch GET https://registry.npmjs.org/ultrahtml attempt 1 failed with ENOTFOUND
+2248 http fetch GET https://registry.npmjs.org/tslib attempt 1 failed with ENOTFOUND
+2249 http fetch GET https://registry.npmjs.org/typescript attempt 1 failed with ENOTFOUND
+2250 http fetch GET https://registry.npmjs.org/ufo attempt 1 failed with ENOTFOUND
+2251 http fetch GET https://registry.npmjs.org/trough attempt 1 failed with ENOTFOUND
+2252 http fetch GET https://registry.npmjs.org/unenv attempt 1 failed with ENOTFOUND
+2253 http fetch GET https://registry.npmjs.org/undici attempt 1 failed with ENOTFOUND
+2254 http fetch GET https://registry.npmjs.org/uncrypto attempt 1 failed with ENOTFOUND
+2255 http fetch GET https://registry.npmjs.org/tsconfck attempt 2 failed with ENOTFOUND
+2256 http fetch GET https://registry.npmjs.org/ultrahtml attempt 2 failed with ENOTFOUND
+2257 http fetch GET https://registry.npmjs.org/tslib attempt 2 failed with ENOTFOUND
+2258 http fetch GET https://registry.npmjs.org/typescript attempt 2 failed with ENOTFOUND
+2259 http fetch GET https://registry.npmjs.org/ufo attempt 2 failed with ENOTFOUND
+2260 http fetch GET https://registry.npmjs.org/trough attempt 2 failed with ENOTFOUND
+2261 http fetch GET https://registry.npmjs.org/unenv attempt 2 failed with ENOTFOUND
+2262 http fetch GET https://registry.npmjs.org/undici attempt 2 failed with ENOTFOUND
+2263 http fetch GET https://registry.npmjs.org/uncrypto attempt 2 failed with ENOTFOUND
+2264 http fetch GET https://registry.npmjs.org/tsconfck attempt 3 failed with ENOTFOUND
+2265 http fetch GET https://registry.npmjs.org/ultrahtml attempt 3 failed with ENOTFOUND
+2266 http fetch GET https://registry.npmjs.org/tslib attempt 3 failed with ENOTFOUND
+2267 http fetch GET https://registry.npmjs.org/typescript attempt 3 failed with ENOTFOUND
+2268 http fetch GET https://registry.npmjs.org/ufo attempt 3 failed with ENOTFOUND
+2269 http fetch GET https://registry.npmjs.org/trough attempt 3 failed with ENOTFOUND
+2270 http fetch GET https://registry.npmjs.org/unenv attempt 3 failed with ENOTFOUND
+2271 http fetch GET https://registry.npmjs.org/undici attempt 3 failed with ENOTFOUND
+2272 http fetch GET https://registry.npmjs.org/uncrypto attempt 3 failed with ENOTFOUND
+2273 http fetch GET 200 https://registry.npmjs.org/tsconfck 70035ms (cache stale)
+2274 silly packumentCache corgi:https://registry.npmjs.org/tsconfck set size:79815 disposed:false
+2275 silly inflate node_modules/unified
+2276 silly packumentCache corgi:https://registry.npmjs.org/unified cache-miss
+2277 http fetch GET 200 https://registry.npmjs.org/ultrahtml 70037ms (cache stale)
+2278 silly packumentCache corgi:https://registry.npmjs.org/ultrahtml set size:54025 disposed:false
+2279 silly inflate node_modules/unifont
+2280 silly packumentCache corgi:https://registry.npmjs.org/unifont cache-miss
+2281 http fetch GET 200 https://registry.npmjs.org/tslib 70040ms (cache stale)
+2282 silly packumentCache corgi:https://registry.npmjs.org/tslib set size:42915 disposed:false
+2283 silly inflate node_modules/unist-util-find-after
+2284 silly packumentCache corgi:https://registry.npmjs.org/unist-util-find-after cache-miss
+2285 http fetch GET 200 https://registry.npmjs.org/trough 70043ms (cache stale)
+2286 silly packumentCache corgi:https://registry.npmjs.org/trough set size:15591 disposed:false
+2287 silly inflate node_modules/unist-util-is
+2288 silly packumentCache corgi:https://registry.npmjs.org/unist-util-is cache-miss
+2289 http fetch GET 200 https://registry.npmjs.org/ufo 70039ms (cache stale)
+2290 silly packumentCache corgi:https://registry.npmjs.org/ufo set size:84287 disposed:false
+2291 silly inflate node_modules/unist-util-modify-children
+2292 silly packumentCache corgi:https://registry.npmjs.org/unist-util-modify-children cache-miss
+2293 http fetch GET 200 https://registry.npmjs.org/unenv 70038ms (cache stale)
+2294 silly packumentCache corgi:https://registry.npmjs.org/unenv set size:110674 disposed:false
+2295 silly inflate node_modules/unist-util-position
+2296 silly packumentCache corgi:https://registry.npmjs.org/unist-util-position cache-miss
+2297 http fetch GET 200 https://registry.npmjs.org/undici 70040ms (cache stale)
+2298 silly packumentCache corgi:https://registry.npmjs.org/undici set size:421189 disposed:false
+2299 silly inflate node_modules/unist-util-remove-position
+2300 silly packumentCache corgi:https://registry.npmjs.org/unist-util-remove-position cache-miss
+2301 http fetch GET 200 https://registry.npmjs.org/typescript 70052ms (cache stale)
+2302 silly packumentCache corgi:https://registry.npmjs.org/typescript set size:8576007 disposed:false
+2303 silly inflate node_modules/unist-util-stringify-position
+2304 silly packumentCache corgi:https://registry.npmjs.org/unist-util-stringify-position cache-miss
+2305 http fetch GET 200 https://registry.npmjs.org/uncrypto 70076ms (cache stale)
+2306 silly packumentCache corgi:https://registry.npmjs.org/uncrypto set size:5941 disposed:false
+2307 silly inflate node_modules/unist-util-visit
+2308 silly packumentCache corgi:https://registry.npmjs.org/unist-util-visit cache-miss
+2309 http fetch GET https://registry.npmjs.org/unified attempt 1 failed with ENOTFOUND
+2310 http fetch GET https://registry.npmjs.org/unifont attempt 1 failed with ENOTFOUND
+2311 http fetch GET https://registry.npmjs.org/unist-util-position attempt 1 failed with ENOTFOUND
+2312 http fetch GET https://registry.npmjs.org/unist-util-is attempt 1 failed with ENOTFOUND
+2313 http fetch GET https://registry.npmjs.org/unist-util-visit attempt 1 failed with ENOTFOUND
+2314 http fetch GET https://registry.npmjs.org/unist-util-find-after attempt 1 failed with ENOTFOUND
+2315 http fetch GET https://registry.npmjs.org/unist-util-stringify-position attempt 1 failed with ENOTFOUND
+2316 http fetch GET https://registry.npmjs.org/unist-util-modify-children attempt 1 failed with ENOTFOUND
+2317 http fetch GET https://registry.npmjs.org/unist-util-remove-position attempt 1 failed with ENOTFOUND
+2318 http fetch GET https://registry.npmjs.org/unified attempt 2 failed with ENOTFOUND
+2319 http fetch GET https://registry.npmjs.org/unifont attempt 2 failed with ENOTFOUND
+2320 http fetch GET https://registry.npmjs.org/unist-util-position attempt 2 failed with ENOTFOUND
+2321 http fetch GET https://registry.npmjs.org/unist-util-is attempt 2 failed with ENOTFOUND
+2322 http fetch GET https://registry.npmjs.org/unist-util-visit attempt 2 failed with ENOTFOUND
+2323 http fetch GET https://registry.npmjs.org/unist-util-find-after attempt 2 failed with ENOTFOUND
+2324 http fetch GET https://registry.npmjs.org/unist-util-stringify-position attempt 2 failed with ENOTFOUND
+2325 http fetch GET https://registry.npmjs.org/unist-util-modify-children attempt 2 failed with ENOTFOUND
+2326 http fetch GET https://registry.npmjs.org/unist-util-remove-position attempt 2 failed with ENOTFOUND
