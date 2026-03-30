@@ -9,9 +9,9 @@
   "scripts": {
     "dev": "wrangler types && astro dev",
     "start": "wrangler types && astro dev",
-    "build": "wrangler types && astro check && astro build && node ./scripts/prepare-cloudflare-pages.mjs",
+    "build": "wrangler types && astro check && astro build && node ./scripts/build-pages-output.mjs",
     "preview": "wrangler types && astro preview",
-    "pages:preview": "npm run build && wrangler pages dev ./dist"
+    "pages:preview": "npm run build && wrangler pages dev ./dist-pages"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.2",
