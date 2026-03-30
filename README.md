@@ -17,7 +17,7 @@ Application Astro 6 pour Cloudflare Pages permettant de reserver des pains artis
 
 ## Demarrage local
 
-Prerequis: Node.js 20 minimum.
+Prerequis: Node.js 22.12 minimum.
 
 1. Installer les dependances:
 
@@ -62,7 +62,7 @@ Prerequis: Node.js 20 minimum.
 4. Build Cloudflare Pages:
    - Commande: `npm run build`
    - Repertoire de sortie: `dist`
-   - Variable d'environnement recommandee sur Pages: `NODE_VERSION=20`
+   - Variable d'environnement recommandee sur Pages: `NODE_VERSION=22`
 
 ## Notes techniques
 
