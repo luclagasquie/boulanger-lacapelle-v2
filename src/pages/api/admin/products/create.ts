@@ -1,7 +1,7 @@
 import type { APIRoute } from "astro";
 import { adminCookieName } from "../../../../lib/config";
 import { isAdminAuthenticated } from "../../../../lib/admin";
-import { createProduct } from "../../../../lib/db";
+import { createProduct, isDatabaseConfigured } from "../../../../lib/db";
 
 function slugify(value: string) {
   return value
@@ -16,6 +16,10 @@ function slugify(value: string) {
 export const POST: APIRoute = async ({ request, cookies, url }) => {
   if (!isAdminAuthenticated(cookies.get(adminCookieName)?.value)) {
     return Response.redirect(new URL("/admin?status=auth", url), 303);
+  }
+
+  if (!isDatabaseConfigured()) {
+    return Response.redirect(new URL("/admin?status=storage", url), 303);
   }
 
   const formData = await request.formData();

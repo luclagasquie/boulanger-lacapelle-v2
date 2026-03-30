@@ -1,8 +1,16 @@
 {
+  "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "boulanger-lacapelle-v2",
+  "main": "@astrojs/cloudflare/entrypoints/server",
   "compatibility_date": "2026-03-17",
   "compatibility_flags": ["nodejs_compat"],
-  "pages_build_output_dir": "./dist",
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS"
+  },
+  "observability": {
+    "enabled": true
+  },
   "d1_databases": [
     {
       "binding": "DB",

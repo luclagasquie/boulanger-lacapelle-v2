@@ -2,13 +2,21 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { bakery, adminCookieName } from "../lib/config";
 import { clearAdminCookie, isAdminAuthenticated, isAdminConfigured } from "../lib/admin";
-import { formatCurrency, listAllProducts, listOrderDates, listOrdersForPickupDate, priceFromWeight } from "../lib/db";
+import {
+  formatCurrency,
+  isDatabaseConfigured,
+  listAllProducts,
+  listOrderDates,
+  listOrdersForPickupDate,
+  priceFromWeight
+} from "../lib/db";
 
 const secure = Astro.url.protocol === "https:";
 const searchParams = Astro.url.searchParams;
 const adminCookie = Astro.cookies.get(adminCookieName)?.value;
 const isAuthenticated = isAdminAuthenticated(adminCookie);
 const configured = isAdminConfigured();
+const databaseConfigured = isDatabaseConfigured();
 
 if (searchParams.get("logout") === "1") {
   clearAdminCookie(Astro.cookies, secure);
@@ -48,6 +56,10 @@ const messageMap: Record<string, { type: "success" | "error"; message: string }>
     type: "success",
     message: "Le tableau de commande a ete reinitialise pour cette date."
   },
+  storage: {
+    type: "error",
+    message: "Le binding D1 `DB` n'est pas configure sur Cloudflare."
+  },
   invalid: {
     type: "error",
     message: "Les donnees envoyees sont invalides."
@@ -74,6 +86,12 @@ const flash = status ? messageMap[status] : null;
         Configurez d'abord `ADMIN_PASSWORD` et `ADMIN_SESSION_TOKEN` dans les secrets Cloudflare ou dans `.dev.vars`.
       </p>
     )}
+    {!databaseConfigured && (
+      <p class="flash flash--error">
+        Configurez aussi le binding D1 `DB` sur Cloudflare. Sans lui, le tableau de bord et l'enregistrement des commandes restent
+        indisponibles.
+      </p>
+    )}
 
     {flash && <p class={`flash flash--${flash.type}`}>{flash.message}</p>}
 
@@ -90,6 +108,17 @@ const flash = status ? messageMap[status] : null;
             Ouvrir le tableau de bord
           </button>
         </form>
+      </section>
+    ) : !databaseConfigured ? (
+      <section class="admin-login">
+        <div class="auth-card">
+          <p class="section-heading__eyebrow">Configuration Cloudflare</p>
+          <h2>Binding D1 requis</h2>
+          <p>
+            Le site est deploye sans le binding `DB`. Ajoutez la base D1 sur le projet Cloudflare cible, puis redeployez pour
+            retrouver le tableau de bord complet.
+          </p>
+        </div>
       </section>
     ) : (
       <>

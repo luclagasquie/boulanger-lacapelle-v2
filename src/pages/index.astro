@@ -1,9 +1,10 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { bakery } from "../lib/config";
-import { formatCurrency, listActiveProducts, priceFromWeight } from "../lib/db";
+import { formatCurrency, isDatabaseConfigured, listActiveProducts, priceFromWeight } from "../lib/db";
 import { getReservationContext } from "../lib/schedule";
 
+const databaseConfigured = isDatabaseConfigured();
 const products = await listActiveProducts();
 const reservation = getReservationContext();
 const searchParams = Astro.url.searchParams;
@@ -13,7 +14,8 @@ const messageMap = {
   closed: "Les reservations ne sont pas ouvertes aujourd'hui. Revenez le dimanche pour le lundi ou le mercredi pour le jeudi.",
   empty: "Choisissez au moins un pain avant de valider la reservation.",
   invalid: "Certains champs sont invalides. Verifiez vos coordonnees et les quantites.",
-  unavailable: "Un des produits choisis n'est plus disponible. Rechargez la page avant de recommencer."
+  unavailable: "Un des produits choisis n'est plus disponible. Rechargez la page avant de recommencer.",
+  storage: "Le stockage D1 n'est pas configure sur Cloudflare. Ajoutez le binding `DB` avant d'accepter des reservations."
 } as const;
 
 const flashCode = searchParams.get("status") as keyof typeof messageMap | null;
@@ -42,6 +44,12 @@ const flashMessage = flashCode ? messageMap[flashCode] : null;
     </section>
 
     {flashMessage && flashType && <p class={`flash flash--${flashType}`}>{flashMessage}</p>}
+    {!databaseConfigured && (
+      <p class="flash flash--error">
+        Le site s'affiche avec le catalogue par defaut, mais les reservations sont desactivees tant que le binding D1 `DB` n'est
+        pas configure sur Cloudflare.
+      </p>
+    )}
 
     <section class="section-card">
       <p class={`notice notice--${reservation.isOpen ? "success" : "warning"}`}>
@@ -87,7 +95,12 @@ const flashMessage = flashCode ? messageMap[flashCode] : null;
                     <label class="stepper-field">
                       <span>Quantite</span>
                       <div class="qty-stepper">
-                        <button type="button" class="stepper-button" data-step="-1" disabled={!reservation.isOpen}>
+                        <button
+                          type="button"
+                          class="stepper-button"
+                          data-step="-1"
+                          disabled={!reservation.isOpen || !databaseConfigured}
+                        >
                           -
                         </button>
                         <input
@@ -99,9 +112,14 @@ const flashMessage = flashCode ? messageMap[flashCode] : null;
                           value="0"
                           data-price={unitPrice}
                           data-product-title={product.title}
-                          disabled={!reservation.isOpen}
+                          disabled={!reservation.isOpen || !databaseConfigured}
                         />
-                        <button type="button" class="stepper-button" data-step="1" disabled={!reservation.isOpen}>
+                        <button
+                          type="button"
+                          class="stepper-button"
+                          data-step="1"
+                          disabled={!reservation.isOpen || !databaseConfigured}
+                        >
                           +
                         </button>
                       </div>
@@ -144,7 +162,7 @@ const flashMessage = flashCode ? messageMap[flashCode] : null;
               <p>Aucun paiement en ligne.</p>
               <p>Le reglement s'effectue sur place en especes entre 17 h et 18 h 30.</p>
             </div>
-            <button type="submit" class="cta" disabled={!reservation.isOpen}>
+            <button type="submit" class="cta" disabled={!reservation.isOpen || !databaseConfigured}>
               Reserver ma commande
             </button>
           </div>

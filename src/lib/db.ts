@@ -42,6 +42,11 @@ export type OrderRecord = {
   items: OrderItem[];
 };
 
+type SeedProduct = Pick<
+  Product,
+  "slug" | "title" | "weight_grams" | "price_per_kg_cents" | "image_url" | "sort_order"
+>;
+
 const defaultProducts = [
   {
     slug: "pain-au-levain",
@@ -83,12 +88,37 @@ const defaultProducts = [
     image_url: "/images/pain-aux-noisettes.svg",
     sort_order: 5
   }
-];
+] satisfies SeedProduct[];
 
 let setupPromise: Promise<void> | null = null;
 
+export class MissingDatabaseBindingError extends Error {
+  constructor() {
+    super("Le binding D1 `DB` est manquant.");
+    this.name = "MissingDatabaseBindingError";
+  }
+}
+
+export function isDatabaseConfigured() {
+  return typeof env.DB !== "undefined";
+}
+
 function db() {
+  if (!isDatabaseConfigured()) {
+    throw new MissingDatabaseBindingError();
+  }
+
   return env.DB;
+}
+
+function fallbackProducts(): Product[] {
+  return defaultProducts.map((product, index) => ({
+    id: index + 1,
+    ...product,
+    is_active: 1,
+    created_at: "1970-01-01 00:00:00",
+    updated_at: "1970-01-01 00:00:00"
+  }));
 }
 
 export function priceFromWeight(weightGrams: number, pricePerKgCents: number) {
@@ -189,30 +219,46 @@ export async function ensureDatabase() {
 }
 
 export async function listActiveProducts() {
-  await ensureDatabase();
-  const result = await db()
-    .prepare(
-      `SELECT id, slug, title, weight_grams, price_per_kg_cents, image_url, is_active, sort_order, created_at, updated_at
-       FROM products
-       WHERE is_active = 1
-       ORDER BY sort_order ASC, title ASC`
-    )
-    .all<Product>();
+  if (!isDatabaseConfigured()) {
+    return fallbackProducts();
+  }
 
-  return result.results || [];
+  try {
+    await ensureDatabase();
+    const result = await db()
+      .prepare(
+        `SELECT id, slug, title, weight_grams, price_per_kg_cents, image_url, is_active, sort_order, created_at, updated_at
+         FROM products
+         WHERE is_active = 1
+         ORDER BY sort_order ASC, title ASC`
+      )
+      .all<Product>();
+
+    return result.results || [];
+  } catch {
+    return fallbackProducts();
+  }
 }
 
 export async function listAllProducts() {
-  await ensureDatabase();
-  const result = await db()
-    .prepare(
-      `SELECT id, slug, title, weight_grams, price_per_kg_cents, image_url, is_active, sort_order, created_at, updated_at
-       FROM products
-       ORDER BY sort_order ASC, title ASC`
-    )
-    .all<Product>();
+  if (!isDatabaseConfigured()) {
+    return fallbackProducts();
+  }
 
-  return result.results || [];
+  try {
+    await ensureDatabase();
+    const result = await db()
+      .prepare(
+        `SELECT id, slug, title, weight_grams, price_per_kg_cents, image_url, is_active, sort_order, created_at, updated_at
+         FROM products
+         ORDER BY sort_order ASC, title ASC`
+      )
+      .all<Product>();
+
+    return result.results || [];
+  } catch {
+    return fallbackProducts();
+  }
 }
 
 export async function insertOrder(input: {
@@ -288,57 +334,73 @@ export async function insertOrder(input: {
 }
 
 export async function listOrderDates() {
-  await ensureDatabase();
-  const result = await db()
-    .prepare(
-      `SELECT pickup_date, pickup_label, COUNT(*) AS order_count, COALESCE(SUM(total_cents), 0) AS total_cents
-       FROM orders
-       GROUP BY pickup_date, pickup_label
-       ORDER BY pickup_date DESC`
-    )
-    .all<OrderDateSummary>();
-
-  return result.results || [];
-}
-
-export async function listOrdersForPickupDate(pickupDate: string) {
-  await ensureDatabase();
-  const orderRows = await db()
-    .prepare(
-      `SELECT id, pickup_date, pickup_label, customer_first_name, customer_last_name, phone, total_cents, created_at
-       FROM orders
-       WHERE pickup_date = ?
-       ORDER BY created_at ASC, id ASC`
-    )
-    .bind(pickupDate)
-    .all<Omit<OrderRecord, "items">>();
-
-  if (!(orderRows.results || []).length) {
+  if (!isDatabaseConfigured()) {
     return [];
   }
 
-  const itemRows = await db()
-    .prepare(
-      `SELECT id, order_id, product_title, weight_grams, price_per_kg_cents, quantity, line_total_cents
-       FROM order_items
-       WHERE order_id IN (${(orderRows.results || []).map(() => "?").join(", ")})
-       ORDER BY id ASC`
-    )
-    .bind(...(orderRows.results || []).map((row) => row.id))
-    .all<OrderItem>();
+  try {
+    await ensureDatabase();
+    const result = await db()
+      .prepare(
+        `SELECT pickup_date, pickup_label, COUNT(*) AS order_count, COALESCE(SUM(total_cents), 0) AS total_cents
+         FROM orders
+         GROUP BY pickup_date, pickup_label
+         ORDER BY pickup_date DESC`
+      )
+      .all<OrderDateSummary>();
 
-  const itemsByOrder = new Map<number, OrderItem[]>();
+    return result.results || [];
+  } catch {
+    return [];
+  }
+}
 
-  for (const item of itemRows.results || []) {
-    const bucket = itemsByOrder.get(item.order_id) || [];
-    bucket.push(item);
-    itemsByOrder.set(item.order_id, bucket);
+export async function listOrdersForPickupDate(pickupDate: string) {
+  if (!isDatabaseConfigured()) {
+    return [];
   }
 
-  return (orderRows.results || []).map((order) => ({
-    ...order,
-    items: itemsByOrder.get(order.id) || []
-  }));
+  try {
+    await ensureDatabase();
+    const orderRows = await db()
+      .prepare(
+        `SELECT id, pickup_date, pickup_label, customer_first_name, customer_last_name, phone, total_cents, created_at
+         FROM orders
+         WHERE pickup_date = ?
+         ORDER BY created_at ASC, id ASC`
+      )
+      .bind(pickupDate)
+      .all<Omit<OrderRecord, "items">>();
+
+    if (!(orderRows.results || []).length) {
+      return [];
+    }
+
+    const itemRows = await db()
+      .prepare(
+        `SELECT id, order_id, product_title, weight_grams, price_per_kg_cents, quantity, line_total_cents
+         FROM order_items
+         WHERE order_id IN (${(orderRows.results || []).map(() => "?").join(", ")})
+         ORDER BY id ASC`
+      )
+      .bind(...(orderRows.results || []).map((row) => row.id))
+      .all<OrderItem>();
+
+    const itemsByOrder = new Map<number, OrderItem[]>();
+
+    for (const item of itemRows.results || []) {
+      const bucket = itemsByOrder.get(item.order_id) || [];
+      bucket.push(item);
+      itemsByOrder.set(item.order_id, bucket);
+    }
+
+    return (orderRows.results || []).map((order) => ({
+      ...order,
+      items: itemsByOrder.get(order.id) || []
+    }));
+  } catch {
+    return [];
+  }
 }
 
 export async function createProduct(input: {

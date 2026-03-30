@@ -1,9 +1,13 @@
 import type { APIRoute } from "astro";
-import { insertOrder, listActiveProducts, priceFromWeight } from "../../lib/db";
+import { insertOrder, isDatabaseConfigured, listActiveProducts, priceFromWeight } from "../../lib/db";
 import { getReservationContext } from "../../lib/schedule";
 
 export const POST: APIRoute = async ({ request }) => {
   const reservation = getReservationContext();
+
+  if (!isDatabaseConfigured()) {
+    return Response.redirect(new URL("/?status=storage", request.url), 303);
+  }
 
   if (!reservation.isOpen || !reservation.activeWindow) {
     return Response.redirect(new URL("/?status=closed", request.url), 303);

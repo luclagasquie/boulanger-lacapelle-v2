@@ -1,6 +1,6 @@
 # Boulangerie Lacapelle-Cabanac
 
-Application Astro 6 pour Cloudflare Pages permettant de reserver des pains artisanaux chez Zacharie Zion, a Lacapelle-Cabanac.
+Application Astro 6 pour Cloudflare Workers permettant de reserver des pains artisanaux chez Zacharie Zion, a Lacapelle-Cabanac.
 
 ## Fonctionnalites
 
@@ -37,13 +37,13 @@ Prerequis: Node.js 22.12 minimum.
    npm run dev
    ```
 
-4. Simuler Cloudflare Pages apres build:
+4. Previsualiser le Worker apres build:
 
    ```bash
-   npm run pages:preview
+   npm run preview
    ```
 
-## Configuration Cloudflare
+## Configuration Cloudflare Workers
 
 1. Creer une base D1:
 
@@ -51,7 +51,7 @@ Prerequis: Node.js 22.12 minimum.
    npx wrangler d1 create boulanger-lacapelle
    ```
 
-2. Reporter l'identifiant renvoye dans `wrangler.jsonc` pour le binding `DB`, ou configurer le binding depuis le dashboard Cloudflare Pages.
+2. Reporter l'identifiant renvoye dans `wrangler.jsonc` pour le binding `DB`.
 3. Ajouter les secrets:
 
    ```bash
@@ -59,10 +59,55 @@ Prerequis: Node.js 22.12 minimum.
    npx wrangler secret put ADMIN_SESSION_TOKEN
    ```
 
-4. Build Cloudflare Pages:
-   - Commande: `npm run build`
-   - Repertoire de sortie: `dist`
-   - Variable d'environnement recommandee sur Pages: `NODE_VERSION=22`
+4. Se connecter a Cloudflare depuis la machine de deploiement:
+
+   ```bash
+   npx wrangler login
+   ```
+
+## Procedure de deploiement
+
+### Deploiement manuel
+
+1. Deployer le Worker:
+
+   ```bash
+   npm run deploy
+   ```
+
+Le Worker utilise la configuration definie dans `wrangler.jsonc`:
+
+- entree Worker: `@astrojs/cloudflare/entrypoints/server`
+- assets statiques: `./dist`
+- binding D1: `DB`
+
+### Previsualisation locale
+
+Pour verifier le comportement Workers avant de deployer:
+
+```bash
+npm run preview
+```
+
+### CI/CD avec Workers Builds
+
+Dans le dashboard Cloudflare, cree un projet `Workers Builds` et configure:
+
+- Build command: `npm run build`
+- Deploy command: `npx wrangler deploy`
+- Version Node recommandee: `22`
+
+Si tu utilises des environnements Wrangler plus tard, reconstruis l'application pour chaque environnement. Exemple:
+
+```bash
+CLOUDFLARE_ENV=production npm run deploy
+```
+
+## Depannage deploiement
+
+- Si la home renvoie une erreur 500 sur Cloudflare, verifie d'abord que le binding D1 `DB` est bien configure sur le Worker deploye.
+- Les secrets `ADMIN_PASSWORD` et `ADMIN_SESSION_TOKEN` n'affectent pas la home, mais ils sont requis pour l'administration.
+- Utilise bien un projet Workers et non un projet Pages: avec Astro 6 et `@astrojs/cloudflare` v13, le chemin officiellement supporte est Cloudflare Workers.
 
 ## Notes techniques
 
