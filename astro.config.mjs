@@ -7,6 +7,10 @@ export default defineConfig({
     imageService: "passthrough",
     inspectorPort: false
   }),
+  build: {
+    client: "./",
+    server: "./_worker.js"
+  },
   session: {
     driver: sessionDrivers.lruCache()
   },
