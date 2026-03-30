@@ -3,13 +3,18 @@ import { setAdminCookie } from "../../../lib/admin";
 import { env } from "cloudflare:workers";
 
 export const POST: APIRoute = async ({ request, cookies, url }) => {
-  const formData = await request.formData();
-  const password = String(formData.get("password") || "");
+  try {
+    const formData = await request.formData();
+    const password = String(formData.get("password") || "");
 
-  if (!env.ADMIN_PASSWORD || password !== env.ADMIN_PASSWORD) {
-    return Response.redirect(new URL("/admin?status=auth", url), 303);
+    if (!env.ADMIN_PASSWORD || password !== env.ADMIN_PASSWORD) {
+      return Response.redirect(new URL("/admin?status=auth", url), 303);
+    }
+
+    setAdminCookie(cookies, url.protocol === "https:");
+    return Response.redirect(new URL("/admin", url), 303);
+  } catch (error) {
+    console.error("Admin login failed", error);
+    return Response.redirect(new URL("/admin?status=server_error", url), 303);
   }
-
-  setAdminCookie(cookies, url.protocol === "https:");
-  return Response.redirect(new URL("/admin", url), 303);
 };

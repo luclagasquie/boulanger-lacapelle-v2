@@ -63,6 +63,10 @@ const messageMap: Record<string, { type: "success" | "error"; message: string }>
   invalid: {
     type: "error",
     message: "Les donnees envoyees sont invalides."
+  },
+  server_error: {
+    type: "error",
+    message: "Une erreur serveur est survenue pendant la connexion. Verifiez les logs Cloudflare."
   }
 };
 
