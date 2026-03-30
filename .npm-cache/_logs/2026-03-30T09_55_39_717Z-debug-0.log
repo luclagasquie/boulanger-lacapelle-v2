@@ -2330,3 +2330,57 @@
 2324 http fetch GET https://registry.npmjs.org/unist-util-stringify-position attempt 2 failed with ENOTFOUND
 2325 http fetch GET https://registry.npmjs.org/unist-util-modify-children attempt 2 failed with ENOTFOUND
 2326 http fetch GET https://registry.npmjs.org/unist-util-remove-position attempt 2 failed with ENOTFOUND
+2327 http fetch GET https://registry.npmjs.org/unified attempt 3 failed with ENOTFOUND
+2328 http fetch GET https://registry.npmjs.org/unifont attempt 3 failed with ENOTFOUND
+2329 http fetch GET https://registry.npmjs.org/unist-util-position attempt 3 failed with ENOTFOUND
+2330 http fetch GET https://registry.npmjs.org/unist-util-is attempt 3 failed with ENOTFOUND
+2331 http fetch GET https://registry.npmjs.org/unist-util-visit attempt 3 failed with ENOTFOUND
+2332 http fetch GET https://registry.npmjs.org/unist-util-find-after attempt 3 failed with ENOTFOUND
+2333 http fetch GET https://registry.npmjs.org/unist-util-stringify-position attempt 3 failed with ENOTFOUND
+2334 http fetch GET https://registry.npmjs.org/unist-util-modify-children attempt 3 failed with ENOTFOUND
+2335 http fetch GET https://registry.npmjs.org/unist-util-remove-position attempt 3 failed with ENOTFOUND
+2336 http fetch GET 200 https://registry.npmjs.org/unifont 70070ms (cache stale)
+2337 silly packumentCache corgi:https://registry.npmjs.org/unifont set size:20774 disposed:false
+2338 silly inflate node_modules/unist-util-visit-children
+2339 silly packumentCache corgi:https://registry.npmjs.org/unist-util-visit-children cache-miss
+2340 http fetch GET 200 https://registry.npmjs.org/unified 70076ms (cache stale)
+2341 silly packumentCache corgi:https://registry.npmjs.org/unified set size:74704 disposed:false
+2342 silly inflate node_modules/unist-util-visit-parents
+2343 silly packumentCache corgi:https://registry.npmjs.org/unist-util-visit-parents cache-miss
+2344 http fetch GET 200 https://registry.npmjs.org/unist-util-position 70073ms (cache stale)
+2345 silly packumentCache corgi:https://registry.npmjs.org/unist-util-position set size:19819 disposed:false
+2346 silly inflate node_modules/unstorage
+2347 silly packumentCache corgi:https://registry.npmjs.org/unstorage cache-miss
+2348 http fetch GET 200 https://registry.npmjs.org/unist-util-visit 70038ms (cache stale)
+2349 silly packumentCache corgi:https://registry.npmjs.org/unist-util-visit set size:34010 disposed:false
+2350 silly inflate node_modules/vfile
+2351 silly packumentCache corgi:https://registry.npmjs.org/vfile cache-miss
+2352 http fetch GET 200 https://registry.npmjs.org/unist-util-is 70077ms (cache stale)
+2353 silly packumentCache corgi:https://registry.npmjs.org/unist-util-is set size:29413 disposed:false
+2354 silly inflate node_modules/vfile-location
+2355 silly packumentCache corgi:https://registry.npmjs.org/vfile-location cache-miss
+2356 http fetch GET 200 https://registry.npmjs.org/unist-util-find-after 70078ms (cache stale)
+2357 silly packumentCache corgi:https://registry.npmjs.org/unist-util-find-after set size:14812 disposed:false
+2358 silly inflate node_modules/vfile-message
+2359 silly packumentCache corgi:https://registry.npmjs.org/vfile-message cache-miss
+2360 http fetch GET 200 https://registry.npmjs.org/unist-util-stringify-position 70041ms (cache stale)
+2361 silly packumentCache corgi:https://registry.npmjs.org/unist-util-stringify-position set size:19551 disposed:false
+2362 silly inflate node_modules/vite
+2363 silly packumentCache corgi:https://registry.npmjs.org/vite cache-miss
+2364 http fetch GET 200 https://registry.npmjs.org/unist-util-remove-position 70075ms (cache stale)
+2365 silly packumentCache corgi:https://registry.npmjs.org/unist-util-remove-position set size:20288 disposed:false
+2366 silly inflate node_modules/vitefu
+2367 silly packumentCache corgi:https://registry.npmjs.org/vitefu cache-miss
+2368 http fetch GET 200 https://registry.npmjs.org/unist-util-modify-children 70079ms (cache stale)
+2369 silly packumentCache corgi:https://registry.npmjs.org/unist-util-modify-children set size:19484 disposed:false
+2370 silly inflate node_modules/web-namespaces
+2371 silly packumentCache corgi:https://registry.npmjs.org/web-namespaces cache-miss
+2372 http fetch GET https://registry.npmjs.org/unist-util-visit-children attempt 1 failed with ENOTFOUND
+2373 http fetch GET https://registry.npmjs.org/unstorage attempt 1 failed with ENOTFOUND
+2374 http fetch GET https://registry.npmjs.org/vfile attempt 1 failed with ENOTFOUND
+2375 http fetch GET https://registry.npmjs.org/vfile-location attempt 1 failed with ENOTFOUND
+2376 http fetch GET https://registry.npmjs.org/unist-util-visit-parents attempt 1 failed with ENOTFOUND
+2377 http fetch GET https://registry.npmjs.org/vfile-message attempt 1 failed with ENOTFOUND
+2378 http fetch GET https://registry.npmjs.org/vite attempt 1 failed with ENOTFOUND
+2379 http fetch GET https://registry.npmjs.org/vitefu attempt 1 failed with ENOTFOUND
+2380 http fetch GET https://registry.npmjs.org/web-namespaces attempt 1 failed with ENOTFOUND
