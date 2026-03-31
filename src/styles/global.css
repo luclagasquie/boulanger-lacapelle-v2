@@ -226,6 +226,9 @@ h3 {
   background: rgba(31, 107, 69, 0.11);
   border-color: rgba(31, 107, 69, 0.22);
   color: var(--success);
+  text-align: center;
+  font-weight: 500;
+  font-size: 1.1rem;
 }
 
 .notice--warning {
@@ -412,10 +415,14 @@ input:disabled {
 .cta,
 .secondary-button,
 .danger-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   border: 0;
   border-radius: 999px;
   padding: 14px 20px;
   cursor: pointer;
+  text-decoration: none;
   transition:
     transform 160ms ease,
     opacity 160ms ease;
@@ -520,6 +527,17 @@ input:disabled {
 
 .orders-list {
   margin-bottom: 18px;
+}
+
+.admin-day-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.admin-day-actions form {
+  margin: 0;
 }
 
 .order-card,
@@ -640,7 +658,11 @@ input:disabled {
   overflow: hidden;
   border: 1px solid rgba(108, 68, 27, 0.12);
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.15)),
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.5),
+      rgba(255, 255, 255, 0.15)
+    ),
     linear-gradient(135deg, #f3d8a2, #f5e7c7);
 }
 
@@ -693,6 +715,7 @@ input:disabled {
 
   .customer-panel__footer,
   .admin-toolbar,
+  .admin-day-actions,
   .section-heading,
   .product-admin-card__toolbar,
   .product-card__controls,

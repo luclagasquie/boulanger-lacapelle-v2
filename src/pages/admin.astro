@@ -173,6 +173,12 @@ const defaultProductImage = "/images/pain-au-levain.svg";
 
               {currentPickup && orderDates.length > 0 ? (
                 <>
+                  <div class="admin-day-actions">
+                    <a class="secondary-button" href={`/api/admin/orders/export?pickup=${encodeURIComponent(currentPickup)}`}>
+                      Telecharger en CSV
+                    </a>
+                  </div>
+
                   <div class="orders-list">
                     {orders.map((order) => (
                       <article class="order-card">
@@ -196,10 +202,12 @@ const defaultProductImage = "/images/pain-au-levain.svg";
                     ))}
                   </div>
 
-                  <form method="POST" action="/api/admin/orders/reset" onsubmit="return confirm('Supprimer toutes les commandes de cette date ?');">
-                    <input type="hidden" name="pickupDate" value={currentPickup} />
-                    <button class="danger-button" type="submit">Reinitialiser cette journee</button>
-                  </form>
+                  <div class="admin-day-actions">
+                    <form method="POST" action="/api/admin/orders/reset" onsubmit="return confirm('Supprimer toutes les commandes de cette date ?');">
+                      <input type="hidden" name="pickupDate" value={currentPickup} />
+                      <button class="danger-button" type="submit">Reinitialiser cette journee</button>
+                    </form>
+                  </div>
                 </>
               ) : (
                 <p class="empty-state">Aucune commande pour le moment.</p>
@@ -238,12 +246,12 @@ const defaultProductImage = "/images/pain-au-levain.svg";
                     <span>Prix au kilo (EUR)</span>
                     <input type="number" name="pricePerKg" min="0.1" max="100" step="0.01" required />
                   </label>
-                  <label class="product-form__wide">
+                  <label>
                     <span>Image</span>
                     <input type="text" name="imageUrl" value={defaultProductImage} required data-image-input />
                   </label>
                   <p class="product-form__hint product-form__wide">
-                    Le produit est ajoute en fin de liste. Vous pourrez ensuite le repositionner par glisser-deposer.
+                    Le produit est ajouté en fin de liste. Vous pourrez ensuite le repositionner par glisser-deposer.
                   </p>
                   <label class="checkbox-row product-form__wide">
                     <input type="checkbox" name="isActive" checked />
