@@ -410,9 +410,18 @@ export async function createProduct(input: {
   pricePerKgCents: number;
   imageUrl: string;
   isActive: number;
-  sortOrder: number;
+  sortOrder?: number;
 }) {
   await ensureDatabase();
+  const nextSortOrder =
+    typeof input.sortOrder === "number"
+      ? input.sortOrder
+      : (
+          await db()
+            .prepare("SELECT COALESCE(MAX(sort_order), 0) + 1 AS next_sort_order FROM products")
+            .first<{ next_sort_order: number }>()
+        )?.next_sort_order || 1;
+
   await db()
     .prepare(
       `INSERT INTO products (
@@ -433,7 +442,7 @@ export async function createProduct(input: {
       input.pricePerKgCents,
       input.imageUrl,
       input.isActive,
-      input.sortOrder
+      nextSortOrder
     )
     .run();
 }
@@ -446,7 +455,7 @@ export async function updateProduct(input: {
   pricePerKgCents: number;
   imageUrl: string;
   isActive: number;
-  sortOrder: number;
+  sortOrder?: number;
 }) {
   await ensureDatabase();
   await db()
@@ -458,7 +467,7 @@ export async function updateProduct(input: {
            price_per_kg_cents = ?,
            image_url = ?,
            is_active = ?,
-           sort_order = ?,
+           sort_order = COALESCE(?, sort_order),
            updated_at = CURRENT_TIMESTAMP
        WHERE id = ?`
     )
@@ -469,10 +478,41 @@ export async function updateProduct(input: {
       input.pricePerKgCents,
       input.imageUrl,
       input.isActive,
-      input.sortOrder,
+      typeof input.sortOrder === "number" ? input.sortOrder : null,
       input.id
     )
     .run();
+}
+
+export async function reorderProducts(productIds: number[]) {
+  await ensureDatabase();
+
+  const normalizedIds = Array.from(new Set(productIds.filter((id) => Number.isInteger(id) && id > 0)));
+  const existing = await db()
+    .prepare("SELECT id FROM products ORDER BY sort_order ASC, title ASC")
+    .all<{ id: number }>();
+  const existingIds = (existing.results || []).map((product) => product.id);
+
+  if (
+    normalizedIds.length === 0 ||
+    normalizedIds.length !== existingIds.length ||
+    existingIds.some((id) => !normalizedIds.includes(id))
+  ) {
+    throw new Error("L'ordre des produits envoye est incomplet.");
+  }
+
+  await db().batch(
+    normalizedIds.map((id, index) =>
+      db()
+        .prepare(
+          `UPDATE products
+           SET sort_order = ?,
+               updated_at = CURRENT_TIMESTAMP
+           WHERE id = ?`
+        )
+        .bind(index + 1, id)
+    )
+  );
 }
 
 export async function deleteProduct(id: number) {

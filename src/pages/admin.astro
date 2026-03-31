@@ -71,6 +71,7 @@ const messageMap: Record<string, { type: "success" | "error"; message: string }>
 };
 
 const flash = status ? messageMap[status] : null;
+const defaultProductImage = "/images/pain-au-levain.svg";
 ---
 
 <BaseLayout title="Espace boulanger | Zacharie Zion" description="Gestion des commandes et des produits de la boulangerie.">
@@ -215,102 +216,140 @@ const flash = status ? messageMap[status] : null;
                 </div>
               </div>
 
-              <form class="product-form product-form--create" method="POST" action="/api/admin/products/create">
-                <label>
-                  <span>Titre</span>
-                  <input type="text" name="title" required maxlength="80" />
-                </label>
-                <label>
-                  <span>Slug</span>
-                  <input type="text" name="slug" placeholder="laisser vide pour auto" maxlength="80" />
-                </label>
-                <label>
-                  <span>Poids (g)</span>
-                  <input type="number" name="weightGrams" min="50" max="5000" required />
-                </label>
-                <label>
-                  <span>Prix au kilo (EUR)</span>
-                  <input type="number" name="pricePerKg" min="0.1" max="100" step="0.01" required />
-                </label>
-                <label>
-                  <span>Image</span>
-                  <input type="text" name="imageUrl" value="/images/pain-au-levain.svg" required />
-                </label>
-                <label>
-                  <span>Ordre</span>
-                  <input type="number" name="sortOrder" min="0" max="999" value="10" required />
-                </label>
-                <label class="checkbox-row">
-                  <input type="checkbox" name="isActive" checked />
-                  <span>Produit visible</span>
-                </label>
-                <button class="cta" type="submit">Ajouter le produit</button>
-              </form>
+              <div class="product-editor product-editor--create" data-product-editor>
+                <div class="product-preview">
+                  <img src={defaultProductImage} alt="Apercu du nouveau produit" data-image-preview />
+                </div>
+
+                <form class="product-form product-form--create" method="POST" action="/api/admin/products/create" data-product-form>
+                  <label class="product-form__wide">
+                    <span>Titre</span>
+                    <input type="text" name="title" required maxlength="80" />
+                  </label>
+                  <label>
+                    <span>Slug</span>
+                    <input type="text" name="slug" placeholder="laisser vide pour auto" maxlength="80" />
+                  </label>
+                  <label>
+                    <span>Poids (g)</span>
+                    <input type="number" name="weightGrams" min="50" max="5000" required />
+                  </label>
+                  <label>
+                    <span>Prix au kilo (EUR)</span>
+                    <input type="number" name="pricePerKg" min="0.1" max="100" step="0.01" required />
+                  </label>
+                  <label class="product-form__wide">
+                    <span>Image</span>
+                    <input type="text" name="imageUrl" value={defaultProductImage} required data-image-input />
+                  </label>
+                  <p class="product-form__hint product-form__wide">
+                    Le produit est ajoute en fin de liste. Vous pourrez ensuite le repositionner par glisser-deposer.
+                  </p>
+                  <label class="checkbox-row product-form__wide">
+                    <input type="checkbox" name="isActive" checked />
+                    <span>Produit visible</span>
+                  </label>
+                  <div class="product-form__actions product-form__wide">
+                    <button class="cta" type="submit">Ajouter le produit</button>
+                  </div>
+                </form>
+              </div>
             </section>
 
             <section class="admin-card">
-              <div class="section-heading">
+              <div class="section-heading section-heading--catalog">
                 <div>
                   <p class="section-heading__eyebrow">Catalogue</p>
                   <h2>Modifier les produits</h2>
+                  <p class="section-heading__note">Glissez chaque carte par sa poignee pour changer l'ordre d'affichage.</p>
                 </div>
+                <p class="admin-sort-status" data-sort-status aria-live="polite"></p>
               </div>
 
-              <div class="product-admin-list">
-                {products.map((product) => (
-                  <article class="product-admin-card">
-                    <img src={product.image_url} alt={product.title} />
-                    <form class="product-form" method="POST" action="/api/admin/products/update">
-                      <input type="hidden" name="id" value={product.id} />
-                      <label>
-                        <span>Titre</span>
-                        <input type="text" name="title" value={product.title} required />
-                      </label>
-                      <label>
-                        <span>Slug</span>
-                        <input type="text" name="slug" value={product.slug} required />
-                      </label>
-                      <label>
-                        <span>Poids (g)</span>
-                        <input type="number" name="weightGrams" min="50" max="5000" value={product.weight_grams} required />
-                      </label>
-                      <label>
-                        <span>Prix au kilo (EUR)</span>
-                        <input
-                          type="number"
-                          name="pricePerKg"
-                          min="0.1"
-                          max="100"
-                          step="0.01"
-                          value={(product.price_per_kg_cents / 100).toFixed(2)}
-                          required
-                        />
-                      </label>
-                      <label>
-                        <span>Image</span>
-                        <input type="text" name="imageUrl" value={product.image_url} required />
-                      </label>
-                      <label>
-                        <span>Ordre</span>
-                        <input type="number" name="sortOrder" min="0" max="999" value={product.sort_order} required />
-                      </label>
-                      <label class="checkbox-row">
-                        <input type="checkbox" name="isActive" checked={product.is_active === 1} />
-                        <span>Produit visible</span>
-                      </label>
-                      <div class="product-form__meta">
-                        <span>Prix piece estime: {formatCurrency(priceFromWeight(product.weight_grams, product.price_per_kg_cents))}</span>
+              <div class="product-admin-list" data-product-sortable data-reorder-endpoint="/api/admin/products/reorder">
+                {products.length === 0 ? (
+                  <p class="empty-state">Aucun produit pour le moment.</p>
+                ) : (
+                  products.map((product) => (
+                    <article class="product-admin-card" data-product-card data-product-id={product.id}>
+                      <div class="product-admin-card__toolbar">
+                        <button
+                          class="drag-handle"
+                          type="button"
+                          draggable="true"
+                          data-drag-handle
+                          aria-label={`Deplacer ${product.title}`}
+                          title="Glisser pour changer l'ordre"
+                        >
+                          <span class="drag-handle__grip" aria-hidden="true">::</span>
+                          <span>Deplacer</span>
+                        </button>
+                        <span class="product-admin-card__position" data-product-position>Position {product.sort_order}</span>
                       </div>
-                      <div class="product-form__actions">
-                        <button class="secondary-button" type="submit">Enregistrer</button>
+
+                      <div class="product-editor" data-product-editor>
+                        <div class="product-preview">
+                          <img src={product.image_url} alt={product.title} loading="lazy" data-image-preview />
+                        </div>
+
+                        <div class="product-editor__body">
+                          <form class="product-form" method="POST" action="/api/admin/products/update" data-product-form>
+                            <input type="hidden" name="id" value={product.id} />
+                            <input type="hidden" name="sortOrder" value={product.sort_order} data-sort-order-input />
+                            <label class="product-form__wide">
+                              <span>Titre</span>
+                              <input type="text" name="title" value={product.title} required />
+                            </label>
+                            <label>
+                              <span>Slug</span>
+                              <input type="text" name="slug" value={product.slug} required />
+                            </label>
+                            <label>
+                              <span>Poids (g)</span>
+                              <input type="number" name="weightGrams" min="50" max="5000" value={product.weight_grams} required />
+                            </label>
+                            <label>
+                              <span>Prix au kilo (EUR)</span>
+                              <input
+                                type="number"
+                                name="pricePerKg"
+                                min="0.1"
+                                max="100"
+                                step="0.01"
+                                value={(product.price_per_kg_cents / 100).toFixed(2)}
+                                required
+                              />
+                            </label>
+                            <label class="product-form__wide">
+                              <span>Image</span>
+                              <input type="text" name="imageUrl" value={product.image_url} required data-image-input />
+                            </label>
+                            <label class="checkbox-row product-form__wide">
+                              <input type="checkbox" name="isActive" checked={product.is_active === 1} />
+                              <span>Produit visible</span>
+                            </label>
+                            <div class="product-form__meta product-form__wide">
+                              <span>Prix piece estime: {formatCurrency(priceFromWeight(product.weight_grams, product.price_per_kg_cents))}</span>
+                            </div>
+                            <div class="product-form__actions product-form__wide">
+                              <button class="secondary-button" type="submit">Enregistrer</button>
+                            </div>
+                          </form>
+
+                          <form
+                            class="product-delete-form"
+                            method="POST"
+                            action="/api/admin/products/delete"
+                            onsubmit="return confirm('Supprimer ce produit ?');"
+                          >
+                            <input type="hidden" name="id" value={product.id} />
+                            <button class="danger-button" type="submit">Supprimer</button>
+                          </form>
+                        </div>
                       </div>
-                    </form>
-                    <form method="POST" action="/api/admin/products/delete" onsubmit="return confirm('Supprimer ce produit ?');">
-                      <input type="hidden" name="id" value={product.id} />
-                      <button class="danger-button" type="submit">Supprimer</button>
-                    </form>
-                  </article>
-                ))}
+                    </article>
+                  ))
+                )}
               </div>
             </section>
           </div>
@@ -318,4 +357,209 @@ const flash = status ? messageMap[status] : null;
       </>
     )}
   </main>
+
+  <script is:inline>
+    const fallbackProductImage = "/images/pain-au-levain.svg";
+
+    document.querySelectorAll("[data-product-editor]").forEach((editor) => {
+      const input = editor.querySelector("[data-image-input]");
+      const preview = editor.querySelector("[data-image-preview]");
+
+      if (!(input instanceof HTMLInputElement) || !(preview instanceof HTMLImageElement)) {
+        return;
+      }
+
+      let lastValidSrc = preview.getAttribute("src") || fallbackProductImage;
+
+      const syncPreview = () => {
+        const nextSrc = input.value.trim() || fallbackProductImage;
+        preview.src = nextSrc;
+      };
+
+      preview.addEventListener("load", () => {
+        lastValidSrc = preview.currentSrc || preview.getAttribute("src") || fallbackProductImage;
+      });
+
+      preview.addEventListener("error", () => {
+        preview.src = lastValidSrc || fallbackProductImage;
+      });
+
+      input.addEventListener("input", syncPreview);
+      input.addEventListener("change", syncPreview);
+      syncPreview();
+    });
+
+    const sortableList = document.querySelector("[data-product-sortable]");
+    const sortStatus = document.querySelector("[data-sort-status]");
+
+    if (sortableList instanceof HTMLElement) {
+      let draggedCard = null;
+      let dragStartOrder = "";
+      let pendingOrder = null;
+      let isSavingOrder = false;
+
+      const getCards = () => Array.from(sortableList.querySelectorAll("[data-product-card]"));
+
+      const getOrderSignature = () =>
+        getCards()
+          .map((card) => card.getAttribute("data-product-id") || "")
+          .join(",");
+
+      const setSortStatus = (message, state = "idle") => {
+        if (!(sortStatus instanceof HTMLElement)) {
+          return;
+        }
+
+        sortStatus.textContent = message;
+        sortStatus.dataset.state = state;
+      };
+
+      const updateSortMetadata = () => {
+        getCards().forEach((card, index) => {
+          const sortOrderInput = card.querySelector("[data-sort-order-input]");
+          const position = card.querySelector("[data-product-position]");
+
+          if (sortOrderInput instanceof HTMLInputElement) {
+            sortOrderInput.value = String(index + 1);
+          }
+
+          if (position instanceof HTMLElement) {
+            position.textContent = `Position ${index + 1}`;
+          }
+        });
+      };
+
+      const getCardAfterPointer = (pointerY) => {
+        return getCards()
+          .filter((card) => card !== draggedCard)
+          .reduce(
+            (closest, card) => {
+              const rect = card.getBoundingClientRect();
+              const offset = pointerY - rect.top - rect.height / 2;
+
+              if (offset < 0 && offset > closest.offset) {
+                return { offset, element: card };
+              }
+
+              return closest;
+            },
+            { offset: Number.NEGATIVE_INFINITY, element: null }
+          ).element;
+      };
+
+      const persistOrder = async (productIds) => {
+        const endpoint = sortableList.dataset.reorderEndpoint;
+
+        if (!endpoint) {
+          return;
+        }
+
+        const formData = new FormData();
+        productIds.forEach((id) => formData.append("productIds[]", id));
+
+        setSortStatus("Enregistrement de l'ordre...", "pending");
+
+        const response = await fetch(endpoint, {
+          method: "POST",
+          body: formData
+        });
+
+        if (!response.ok) {
+          throw new Error("save_failed");
+        }
+
+        setSortStatus("Ordre enregistre.", "success");
+      };
+
+      const flushPendingOrder = async () => {
+        if (isSavingOrder || !pendingOrder) {
+          return;
+        }
+
+        isSavingOrder = true;
+
+        while (pendingOrder) {
+          const nextOrder = pendingOrder;
+          pendingOrder = null;
+
+          try {
+            await persistOrder(nextOrder);
+          } catch {
+            setSortStatus("Impossible d'enregistrer l'ordre. Rechargez la page et reessayez.", "error");
+          }
+        }
+
+        isSavingOrder = false;
+      };
+
+      sortableList.querySelectorAll("[data-drag-handle]").forEach((handle) => {
+        handle.addEventListener("dragstart", (event) => {
+          draggedCard = handle.closest("[data-product-card]");
+
+          if (!(draggedCard instanceof HTMLElement)) {
+            draggedCard = null;
+            return;
+          }
+
+          dragStartOrder = getOrderSignature();
+          draggedCard.classList.add("is-dragging");
+
+          if (event.dataTransfer) {
+            event.dataTransfer.effectAllowed = "move";
+            event.dataTransfer.setData("text/plain", draggedCard.dataset.productId || "");
+          }
+
+          setSortStatus("Relachez la carte pour enregistrer le nouvel ordre.", "pending");
+        });
+
+        handle.addEventListener("dragend", () => {
+          if (!(draggedCard instanceof HTMLElement)) {
+            return;
+          }
+
+          draggedCard.classList.remove("is-dragging");
+          updateSortMetadata();
+
+          const nextOrderSignature = getOrderSignature();
+
+          if (nextOrderSignature && nextOrderSignature !== dragStartOrder) {
+            pendingOrder = getCards()
+              .map((card) => card.getAttribute("data-product-id") || "")
+              .filter(Boolean);
+            void flushPendingOrder();
+          } else {
+            setSortStatus("Glissez une carte par sa poignee pour reordonner le catalogue.");
+          }
+
+          draggedCard = null;
+        });
+      });
+
+      sortableList.addEventListener("dragover", (event) => {
+        if (!(draggedCard instanceof HTMLElement)) {
+          return;
+        }
+
+        event.preventDefault();
+
+        const nextCard = getCardAfterPointer(event.clientY);
+
+        if (!(nextCard instanceof HTMLElement)) {
+          sortableList.append(draggedCard);
+          return;
+        }
+
+        sortableList.insertBefore(draggedCard, nextCard);
+      });
+
+      sortableList.addEventListener("drop", (event) => {
+        if (draggedCard) {
+          event.preventDefault();
+        }
+      });
+
+      updateSortMetadata();
+      setSortStatus("Glissez une carte par sa poignee pour reordonner le catalogue.");
+    }
+  </script>
 </BaseLayout>

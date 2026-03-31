@@ -151,7 +151,9 @@ h3 {
 .notice,
 .pickup-panel p,
 .empty-state,
+.section-heading__note,
 .product-card__details,
+.product-form__hint,
 .line-total,
 .product-form__meta,
 .order-card p,
@@ -256,6 +258,12 @@ h3 {
   gap: 16px;
   align-items: center;
   margin-bottom: 24px;
+}
+
+.section-heading__note {
+  margin: 10px 0 0;
+  max-width: 42ch;
+  line-height: 1.5;
 }
 
 .total-box {
@@ -510,6 +518,10 @@ input:disabled {
   gap: 16px;
 }
 
+.orders-list {
+  margin-bottom: 18px;
+}
+
 .order-card,
 .product-admin-card {
   border-radius: var(--radius-md);
@@ -526,29 +538,127 @@ input:disabled {
 .product-form,
 .product-form--create {
   display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
 }
 
-.product-form--create {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+.product-form__wide {
+  grid-column: 1 / -1;
 }
 
-.product-form--create .cta,
-.product-form--create .checkbox-row,
-.product-form--create label:first-child {
-  grid-column: span 2;
+.product-form__hint {
+  margin: -2px 0 0;
+  font-size: 0.95rem;
+  line-height: 1.5;
 }
 
-.product-admin-card img {
+.section-heading--catalog {
+  align-items: flex-start;
+}
+
+.admin-sort-status {
+  min-height: 1.5em;
+  margin: 0;
+  text-align: right;
+  color: var(--muted);
+}
+
+.admin-sort-status[data-state="pending"] {
+  color: var(--warning);
+}
+
+.admin-sort-status[data-state="success"] {
+  color: var(--success);
+}
+
+.admin-sort-status[data-state="error"] {
+  color: var(--danger);
+}
+
+.product-admin-card {
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease,
+    opacity 160ms ease;
+}
+
+.product-admin-card.is-dragging {
+  opacity: 0.72;
+  transform: scale(0.99);
+  box-shadow: 0 12px 26px rgba(78, 49, 19, 0.16);
+}
+
+.product-admin-card__toolbar {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.drag-handle {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border: 1px dashed rgba(108, 68, 27, 0.22);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.6);
+  color: var(--brand-deep);
+  cursor: grab;
+  font-weight: 700;
+}
+
+.drag-handle:active {
+  cursor: grabbing;
+}
+
+.drag-handle__grip {
+  font-family: monospace;
+  letter-spacing: 0.12em;
+}
+
+.product-admin-card__position {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.product-editor {
+  display: grid;
+  grid-template-columns: minmax(180px, 220px) minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.product-editor__body {
+  display: grid;
+  gap: 14px;
+}
+
+.product-preview {
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid rgba(108, 68, 27, 0.12);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.15)),
+    linear-gradient(135deg, #f3d8a2, #f5e7c7);
+}
+
+.product-preview img {
   width: 100%;
   aspect-ratio: 4 / 3;
   object-fit: cover;
-  border-radius: 16px;
-  margin-bottom: 14px;
-  background: linear-gradient(135deg, #f3d8a2, #f5e7c7);
 }
 
-.product-form__actions {
+.product-form__meta {
+  padding: 12px 14px;
+  background: rgba(255, 255, 255, 0.55);
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(108, 68, 27, 0.08);
+}
+
+.product-form__actions,
+.product-delete-form {
   display: flex;
   justify-content: flex-end;
 }
@@ -576,6 +686,7 @@ input:disabled {
   .product-grid,
   .field-grid,
   .stats-grid,
+  .product-form,
   .product-form--create {
     grid-template-columns: 1fr;
   }
@@ -583,10 +694,15 @@ input:disabled {
   .customer-panel__footer,
   .admin-toolbar,
   .section-heading,
+  .product-admin-card__toolbar,
   .product-card__controls,
   .product-card__body--row {
     flex-direction: column;
     align-items: stretch;
+  }
+
+  .product-editor {
+    grid-template-columns: 1fr;
   }
 
   .product-card {
@@ -610,6 +726,14 @@ input:disabled {
   .product-form--create label:first-child,
   .field-grid__wide {
     grid-column: auto;
+  }
+
+  .product-form__wide {
+    grid-column: auto;
+  }
+
+  .admin-sort-status {
+    text-align: left;
   }
 }
 

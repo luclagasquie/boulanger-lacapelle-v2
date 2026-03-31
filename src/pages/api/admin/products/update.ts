@@ -29,10 +29,19 @@ export const POST: APIRoute = async ({ request, cookies, url }) => {
   const imageUrl = String(formData.get("imageUrl") || "").trim();
   const weightGrams = Number(formData.get("weightGrams") || 0);
   const pricePerKg = Number(formData.get("pricePerKg") || 0);
-  const sortOrder = Number(formData.get("sortOrder") || 0);
+  const sortOrderValue = String(formData.get("sortOrder") || "").trim();
+  const sortOrder = sortOrderValue ? Number(sortOrderValue) : undefined;
   const isActive = formData.get("isActive") ? 1 : 0;
 
-  if (id <= 0 || !title || !slug || !imageUrl || weightGrams <= 0 || pricePerKg <= 0) {
+  if (
+    id <= 0 ||
+    !title ||
+    !slug ||
+    !imageUrl ||
+    weightGrams <= 0 ||
+    pricePerKg <= 0 ||
+    (typeof sortOrder === "number" && (!Number.isFinite(sortOrder) || sortOrder < 0))
+  ) {
     return Response.redirect(new URL("/admin?status=invalid", url), 303);
   }
 
@@ -45,7 +54,7 @@ export const POST: APIRoute = async ({ request, cookies, url }) => {
       pricePerKgCents: Math.round(pricePerKg * 100),
       imageUrl,
       isActive,
-      sortOrder: Math.round(sortOrder)
+      sortOrder: typeof sortOrder === "number" ? Math.round(sortOrder) : undefined
     });
   } catch {
     return Response.redirect(new URL("/admin?status=invalid", url), 303);
