@@ -441,14 +441,14 @@ input:disabled {
 }
 
 .secondary-button {
-  background: rgba(255, 255, 255, 0.75);
-  color: var(--brand-deep);
+  background: rgba(154, 47, 32, 0.92);
+  color: #fff5f2;
   border: 1px solid rgba(108, 68, 27, 0.16);
 }
 
 .danger-button {
-  background: rgba(154, 47, 32, 0.92);
-  color: #fff5f2;
+  background: rgba(255, 255, 255, 0.75);
+  color: var(--brand-deep);
   font-weight: 700;
 }
 
