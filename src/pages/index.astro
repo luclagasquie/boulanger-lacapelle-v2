@@ -10,12 +10,12 @@ const reservation = getReservationContext();
 const searchParams = Astro.url.searchParams;
 
 const messageMap = {
-  success: "Votre reservation a bien ete enregistree. Le paiement se fera sur place en especes.",
-  closed: "Les reservations ne sont pas ouvertes aujourd'hui. Revenez le dimanche pour le lundi ou le mercredi pour le jeudi.",
-  empty: "Choisissez au moins un pain avant de valider la reservation.",
-  invalid: "Certains champs sont invalides. Verifiez vos coordonnees et les quantites.",
+  success: "Votre réservation a bien été enregistrée. Le paiement se fera sur place en espèces.",
+  closed: "Les réservations ne sont pas ouvertes aujourd'hui. Revenez le dimanche pour le lundi ou le mercredi pour le jeudi.",
+  empty: "Choisissez au moins un pain avant de valider la réservation.",
+  invalid: "Certains champs sont invalides. Vérifiez vos coordonnées et les quantités.",
   unavailable: "Un des produits choisis n'est plus disponible. Rechargez la page avant de recommencer.",
-  storage: "Le stockage D1 n'est pas configure sur Cloudflare. Ajoutez le binding `DB` avant d'accepter des reservations."
+  storage: "Le stockage D1 n'est pas configuré sur Cloudflare. Ajoutez le binding `DB` avant d'accepter des réservations."
 } as const;
 
 const flashCode = searchParams.get("status") as keyof typeof messageMap | null;
@@ -24,17 +24,16 @@ const flashMessage = flashCode ? messageMap[flashCode] : null;
 ---
 
 <BaseLayout
-  title="Boulangerie Zacharie Zion | Reservation de pains artisanaux"
-  description="Reservez vos pains artisanaux a Lacapelle-Cabanac pour le lundi soir ou le jeudi soir."
+  title="Boulangerie Zacharie Zion | Réservation de pains artisanaux"
+  description="Réservez vos pains artisanaux à Lacapelle-Cabanac pour le lundi soir ou le jeudi soir."
 >
   <main class="page">
     <section class="hero">
       <div class="hero__copy">
         <p class="eyebrow">Boulangerie paysanne de Lacapelle-Cabanac</p>
-        <h1>Reservez vos pains artisanaux chez {bakery.bakerName}</h1>
+        <h1>Réservez vos pains artisanaux chez {bakery.bakerName}</h1>
         <p class="hero__lead">
-          Retrait a {bakery.village}, le lundi soir et le jeudi soir de {bakery.openingWindow}. {bakery.cashOnlyLabel}.
-        </p>
+          Retrait à {bakery.village}, le lundi soir et le jeudi soir de {bakery.openingWindow}. {bakery.cashOnlyLabel}.        </p>
         <div class="hero__meta">
           <span>Commandes: dimanche pour le lundi</span>
           <span>Commandes: mercredi pour le jeudi</span>
@@ -46,8 +45,8 @@ const flashMessage = flashCode ? messageMap[flashCode] : null;
     {flashMessage && flashType && <p class={`flash flash--${flashType}`}>{flashMessage}</p>}
     {!databaseConfigured && (
       <p class="flash flash--error">
-        Le site s'affiche avec le catalogue par defaut, mais les reservations sont desactivees tant que le binding D1 `DB` n'est
-        pas configure sur Cloudflare.
+        Le site s'affiche avec le catalogue par défaut, mais les réservations sont désactivées tant que le binding D1 `DB` n'est
+        pas configuré sur Cloudflare.
       </p>
     )}
 
@@ -57,7 +56,7 @@ const flashMessage = flashCode ? messageMap[flashCode] : null;
       </p>
       {reservation.activeWindow && (
         <div class="pickup-panel">
-          <p class="pickup-panel__label">Retrait en cours de reservation</p>
+          <p class="pickup-panel__label">Retrait en cours de réservation</p>
           <strong>{reservation.activeWindow.pickupDateLabel}</strong>
           <p>Commande possible uniquement aujourd'hui.</p>
         </div>
@@ -68,11 +67,11 @@ const flashMessage = flashCode ? messageMap[flashCode] : null;
       <form class="order-form" method="POST" action="/api/order">
         <div class="section-heading">
           <div>
-            <p class="section-heading__eyebrow">Reservation en ligne</p>
+            <p class="section-heading__eyebrow">Réservation en ligne</p>
             <h2>Choisissez vos pains</h2>
           </div>
           <div class="total-box">
-            <span>Total estime</span>
+            <span>Total estimé</span>
             <strong data-total-display>{formatCurrency(0)}</strong>
           </div>
         </div>
@@ -93,7 +92,7 @@ const flashMessage = flashCode ? messageMap[flashCode] : null;
                   </div>
                   <div class="product-card__controls">
                     <label class="stepper-field">
-                      <span>Quantite</span>
+                      <span>Quantité</span>
                       <div class="qty-stepper">
                         <button
                           type="button"
@@ -137,8 +136,8 @@ const flashMessage = flashCode ? messageMap[flashCode] : null;
         <div class="customer-panel">
           <div class="section-heading">
             <div>
-              <p class="section-heading__eyebrow">Coordonnees</p>
-              <h2>Valider la reservation</h2>
+              <p class="section-heading__eyebrow">Coordonnées</p>
+              <h2>Valider la réservation</h2>
             </div>
           </div>
 
@@ -152,7 +151,7 @@ const flashMessage = flashCode ? messageMap[flashCode] : null;
               <input type="text" name="lastName" required minlength="2" maxlength="50" />
             </label>
             <label class="field-grid__wide">
-              <span>Numero de telephone</span>
+              <span>Numéro de téléphone</span>
               <input type="tel" name="phone" required minlength="8" maxlength="25" inputmode="tel" />
             </label>
           </div>
@@ -160,10 +159,10 @@ const flashMessage = flashCode ? messageMap[flashCode] : null;
           <div class="customer-panel__footer">
             <div>
               <p>Aucun paiement en ligne.</p>
-              <p>Le reglement s'effectue sur place en especes entre 17 h et 18 h 30.</p>
+              <p>Le règlement s'effectue sur place en espèces entre 17 h et 18 h 30.</p>
             </div>
             <button type="submit" class="cta" disabled={!reservation.isOpen || !databaseConfigured}>
-              Reserver ma commande
+              Réserver ma commande
             </button>
           </div>
         </div>
@@ -175,7 +174,7 @@ const flashMessage = flashCode ? messageMap[flashCode] : null;
         <p class="section-heading__eyebrow">La boulangerie</p>
         <h2>{bakery.bakerName}</h2>
         <p>
-          Petite boulangerie artisanale situee a {bakery.village} dans le {bakery.region}. Les retraits se font le lundi soir et
+          Petite boulangerie artisanale située à {bakery.village} dans le {bakery.region}. Les retraits se font le lundi soir et
           le jeudi soir uniquement.
         </p>
       </div>
@@ -186,7 +185,7 @@ const flashMessage = flashCode ? messageMap[flashCode] : null;
           <li>Dimanche pour le lundi</li>
           <li>Mercredi pour le jeudi</li>
           <li>Retrait entre 17 h et 18 h 30</li>
-          <li>Paiement en especes sur place</li>
+          <li>Paiement en espèces sur place</li>
         </ul>
       </div>
     </section>

@@ -46,27 +46,27 @@ const messageMap: Record<string, { type: "success" | "error"; message: string }>
   },
   product_saved: {
     type: "success",
-    message: "Produit enregistre."
+    message: "Produit enregistré."
   },
   product_deleted: {
     type: "success",
-    message: "Produit supprime."
+    message: "Produit supprimé."
   },
   orders_reset: {
     type: "success",
-    message: "Le tableau de commande a ete reinitialise pour cette date."
+    message: "Le tableau de commande a été réinitialisé pour cette date."
   },
   storage: {
     type: "error",
-    message: "Le binding D1 `DB` n'est pas configure sur Cloudflare."
+    message: "Le binding D1 `DB` n'est pas configuré sur Cloudflare."
   },
   invalid: {
     type: "error",
-    message: "Les donnees envoyees sont invalides."
+    message: "Les données envoyées sont invalides."
   },
   server_error: {
     type: "error",
-    message: "Une erreur serveur est survenue pendant la connexion. Verifiez les logs Cloudflare."
+    message: "Une erreur serveur est survenue pendant la connexion. Vérifiez les logs Cloudflare."
   }
 };
 
@@ -81,7 +81,7 @@ const defaultProductImage = "/images/pain-au-levain.svg";
         <p class="eyebrow">Administration</p>
         <h1>Espace boulanger de {bakery.bakerName}</h1>
         <p class="hero__lead">
-          Consultation des reservations, mise a jour du catalogue et reinitialisation du tableau de commande.
+          Consultation des réservations, mise à jour du catalogue et réinitialisation du tableau de commande.
         </p>
       </div>
     </section>
@@ -103,7 +103,7 @@ const defaultProductImage = "/images/pain-au-levain.svg";
     {!isAuthenticated ? (
       <section class="admin-login">
         <form method="POST" action="/api/admin/login" class="auth-card">
-          <p class="section-heading__eyebrow">Connexion protegee</p>
+          <p class="section-heading__eyebrow">Connexion protégée</p>
           <h2>Acces Zacharie</h2>
           <label>
             <span>Mot de passe</span>
@@ -120,7 +120,7 @@ const defaultProductImage = "/images/pain-au-levain.svg";
           <p class="section-heading__eyebrow">Configuration Cloudflare</p>
           <h2>Binding D1 requis</h2>
           <p>
-            Le site est deploye sans le binding `DB`. Ajoutez la base D1 sur le projet Cloudflare cible, puis redeployez pour
+            Le site est déployé sans le binding `DB`. Ajoutez la base D1 sur le projet Cloudflare cible, puis redéployez pour
             retrouver le tableau de bord complet.
           </p>
         </div>
@@ -143,7 +143,7 @@ const defaultProductImage = "/images/pain-au-levain.svg";
             </article>
           </div>
           <form method="POST" action="/api/admin/logout">
-            <button class="secondary-button" type="submit">Se deconnecter</button>
+            <button class="secondary-button" type="submit">Se déconnecter</button>
           </form>
         </section>
 
@@ -175,7 +175,7 @@ const defaultProductImage = "/images/pain-au-levain.svg";
                 <>
                   <div class="admin-day-actions">
                     <a class="secondary-button" href={`/api/admin/orders/export?pickup=${encodeURIComponent(currentPickup)}`}>
-                      Telecharger en CSV
+                      Télécharger en CSV
                     </a>
                   </div>
 
@@ -205,7 +205,7 @@ const defaultProductImage = "/images/pain-au-levain.svg";
                   <div class="admin-day-actions">
                     <form method="POST" action="/api/admin/orders/reset" onsubmit="return confirm('Supprimer toutes les commandes de cette date ?');">
                       <input type="hidden" name="pickupDate" value={currentPickup} />
-                      <button class="danger-button" type="submit">Reinitialiser cette journee</button>
+                      <button class="danger-button" type="submit">Réinitialiser cette journée</button>
                     </form>
                   </div>
                 </>
@@ -251,7 +251,7 @@ const defaultProductImage = "/images/pain-au-levain.svg";
                     <input type="text" name="imageUrl" value={defaultProductImage} required data-image-input />
                   </label>
                   <p class="product-form__hint product-form__wide">
-                    Le produit est ajouté en fin de liste. Vous pourrez ensuite le repositionner par glisser-deposer.
+                    Le produit est ajouté en fin de liste. Vous pourrez ensuite le repositionner par glisser-déposer.
                   </p>
                   <label class="checkbox-row product-form__wide">
                     <input type="checkbox" name="isActive" checked />
@@ -286,11 +286,11 @@ const defaultProductImage = "/images/pain-au-levain.svg";
                           type="button"
                           draggable="true"
                           data-drag-handle
-                          aria-label={`Deplacer ${product.title}`}
+                          aria-label={`Déplacer ${product.title}`}
                           title="Glisser pour changer l'ordre"
                         >
                           <span class="drag-handle__grip" aria-hidden="true">::</span>
-                          <span>Deplacer</span>
+                          <span>Déplacer</span>
                         </button>
                         <span class="product-admin-card__position" data-product-position>Position {product.sort_order}</span>
                       </div>
@@ -476,7 +476,7 @@ const defaultProductImage = "/images/pain-au-levain.svg";
           throw new Error("save_failed");
         }
 
-        setSortStatus("Ordre enregistre.", "success");
+        setSortStatus("Ordre enregistré.", "success");
       };
 
       const flushPendingOrder = async () => {
@@ -493,7 +493,7 @@ const defaultProductImage = "/images/pain-au-levain.svg";
           try {
             await persistOrder(nextOrder);
           } catch {
-            setSortStatus("Impossible d'enregistrer l'ordre. Rechargez la page et reessayez.", "error");
+            setSortStatus("Impossible d'enregistrer l'ordre. Rechargez la page et réessayez.", "error");
           }
         }
 
@@ -517,7 +517,7 @@ const defaultProductImage = "/images/pain-au-levain.svg";
             event.dataTransfer.setData("text/plain", draggedCard.dataset.productId || "");
           }
 
-          setSortStatus("Relachez la carte pour enregistrer le nouvel ordre.", "pending");
+          setSortStatus("Relâchez la carte pour enregistrer le nouvel ordre.", "pending");
         });
 
         handle.addEventListener("dragend", () => {
@@ -536,7 +536,7 @@ const defaultProductImage = "/images/pain-au-levain.svg";
               .filter(Boolean);
             void flushPendingOrder();
           } else {
-            setSortStatus("Glissez une carte par sa poignee pour reordonner le catalogue.");
+            setSortStatus("Glissez une carte par sa poignée pour réordonner le catalogue.");
           }
 
           draggedCard = null;
